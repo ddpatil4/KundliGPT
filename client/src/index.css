@@ -1,0 +1,139 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+Devanagari:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: hsl(33, 92%, 96%);
+  --foreground: hsl(33, 95%, 15%);
+  --card: hsl(0, 0%, 100%);
+  --card-foreground: hsl(33, 95%, 15%);
+  --popover: hsl(0, 0%, 100%);
+  --popover-foreground: hsl(33, 95%, 15%);
+  --primary: hsl(25, 95%, 58%);
+  --primary-foreground: hsl(0, 0%, 100%);
+  --secondary: hsl(33, 50%, 88%);
+  --secondary-foreground: hsl(33, 95%, 15%);
+  --muted: hsl(33, 50%, 92%);
+  --muted-foreground: hsl(33, 45%, 35%);
+  --accent: hsl(38, 92%, 50%);
+  --accent-foreground: hsl(0, 0%, 100%);
+  --destructive: hsl(0, 84%, 60%);
+  --destructive-foreground: hsl(0, 0%, 98%);
+  --border: hsl(33, 50%, 85%);
+  --input: hsl(33, 50%, 85%);
+  --ring: hsl(25, 95%, 58%);
+  --radius: 1rem;
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-hindi: 'Noto Sans Devanagari', system-ui, -apple-system, sans-serif;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    background: linear-gradient(135deg, hsl(33, 92%, 96%) 0%, hsl(33, 50%, 92%) 100%);
+    font-family: var(--font-sans);
+    color: var(--foreground);
+    @apply antialiased;
+  }
+}
+
+@layer components {
+  .hindi-text {
+    font-family: var(--font-hindi);
+  }
+  
+  .gradient-bg {
+    background: linear-gradient(135deg, hsl(25, 95%, 58%) 0%, hsl(38, 92%, 50%) 100%);
+  }
+  
+  .card-shadow {
+    box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+  }
+  
+  .form-input {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+  }
+  
+  .form-input:focus {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px -5px rgb(0 0 0 / 0.15), 0 0 0 3px hsl(25, 95%, 58%, 0.2);
+  }
+  
+  .enhanced-card {
+    background: linear-gradient(145deg, hsl(0, 0%, 100%) 0%, hsl(33, 50%, 98%) 100%);
+    box-shadow: 
+      0 20px 25px -5px rgb(0 0 0 / 0.1), 
+      0 8px 10px -6px rgb(0 0 0 / 0.1),
+      inset 0 1px 0 0 rgb(255 255 255 / 0.1);
+  }
+  
+  .hero-gradient {
+    background: linear-gradient(135deg, 
+      hsl(25, 95%, 58%) 0%, 
+      hsl(38, 92%, 50%) 50%, 
+      hsl(45, 90%, 45%) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  
+  .loading-skeleton {
+    background: linear-gradient(90deg, hsl(33, 50%, 88%) 25%, hsl(33, 50%, 92%) 50%, hsl(33, 50%, 88%) 75%);
+    background-size: 200% 100%;
+    animation: loading 1.5s infinite;
+  }
+  
+  .dropdown-item:hover {
+    background-color: hsl(33, 50%, 92%);
+    transform: translateX(4px);
+  }
+  
+  .result-section {
+    animation: fadeInUp 0.6s ease-out forwards;
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  
+  .result-section:nth-child(1) { animation-delay: 0.1s; }
+  .result-section:nth-child(2) { animation-delay: 0.2s; }
+  .result-section:nth-child(3) { animation-delay: 0.3s; }
+  .result-section:nth-child(4) { animation-delay: 0.4s; }
+  .result-section:nth-child(5) { animation-delay: 0.5s; }
+  .result-section:nth-child(6) { animation-delay: 0.6s; }
+  .result-section:nth-child(7) { animation-delay: 0.7s; }
+  .result-section:nth-child(8) { animation-delay: 0.8s; }
+}
+
+@keyframes loading {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media print {
+  body { 
+    background: white !important; 
+  }
+  .no-print { 
+    display: none !important; 
+  }
+  .print-break { 
+    page-break-before: always; 
+  }
+  .card-shadow { 
+    box-shadow: none !important; 
+    border: 1px solid #ccc; 
+  }
+}
