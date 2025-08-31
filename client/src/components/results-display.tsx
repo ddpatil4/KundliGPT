@@ -1,8 +1,5 @@
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import { useVoice } from "@/hooks/use-voice";
-import VoiceSettings from "@/components/voice-settings";
-import { Play, Pause, Square, Volume2, VolumeX } from "lucide-react";
 
 interface ResultsDisplayProps {
   resultHtml: string;
@@ -17,7 +14,6 @@ interface ResultsDisplayProps {
 
 export default function ResultsDisplay({ resultHtml, userInfo, onBack }: ResultsDisplayProps) {
   const { toast } = useToast();
-  const { isPlaying, isPaused, isSupported, speak, pause, resume, stop } = useVoice();
 
   // Format date from YYYY-MM-DD to DD Month YYYY
   const formatDate = (dateString: string): string => {
@@ -62,54 +58,6 @@ export default function ResultsDisplay({ resultHtml, userInfo, onBack }: Results
     window.print();
   };
 
-  const handleVoicePlay = () => {
-    try {
-      if (isPlaying && !isPaused) {
-        pause();
-      } else if (isPaused) {
-        resume();
-      } else {
-        // Extract text content and detect language
-        const tempDiv = document.createElement('div');
-        tempDiv.innerHTML = resultHtml;
-        const textContent = tempDiv.textContent || '';
-        
-        if (!textContent.trim()) {
-          toast({
-            title: "कोई टेक्स्ट नहीं मिला",
-            description: "सुनने के लिए कोई सामग्री नहीं है।",
-          });
-          return;
-        }
-        
-        // Simple language detection based on content
-        const hasHindi = /[\u0900-\u097F]/.test(textContent);
-        const language = hasHindi ? 'hi-IN' : 'en-US';
-        
-        speak(textContent, language);
-      }
-    } catch (error) {
-      console.log('Error in voice play handler:', error);
-      toast({
-        title: "आवाज़ एरर",
-        description: "आवाज़ प्ले करने में समस्या हुई।",
-        variant: "destructive"
-      });
-    }
-  };
-
-  const handleVoiceStop = () => {
-    try {
-      stop();
-    } catch (error) {
-      console.log('Error stopping voice:', error);
-      toast({
-        title: "आवाज़ एरर",
-        description: "आवाज़ बंद करने में समस्या हुई।",
-        variant: "destructive"
-      });
-    }
-  };
 
   return (
     <section className="space-y-6">
@@ -159,44 +107,6 @@ export default function ResultsDisplay({ resultHtml, userInfo, onBack }: Results
             >
               PDF डाउनलोड
             </Button>
-
-            {isSupported && (
-              <div className="flex gap-1">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={handleVoicePlay}
-                  className="gap-1"
-                  data-testid="button-voice-play"
-                  title={isPlaying && !isPaused ? "आवाज़ रोकें" : isPaused ? "आवाज़ जारी रखें" : "आवाज़ में सुनें"}
-                >
-                  {isPlaying && !isPaused ? (
-                    <Pause className="h-4 w-4" />
-                  ) : (
-                    <Play className="h-4 w-4" />
-                  )}
-                  <span className="hidden sm:inline hindi-text">
-                    {isPlaying && !isPaused ? "रोकें" : isPaused ? "जारी" : "सुनें"}
-                  </span>
-                </Button>
-                
-                {isPlaying && (
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={handleVoiceStop}
-                    className="gap-1"
-                    data-testid="button-voice-stop"
-                    title="आवाज़ बंद करें"
-                  >
-                    <Square className="h-4 w-4" />
-                    <span className="hidden sm:inline hindi-text">बंद</span>
-                  </Button>
-                )}
-                
-                <VoiceSettings />
-              </div>
-            )}
           </div>
         </div>
       </div>
@@ -213,7 +123,7 @@ export default function ResultsDisplay({ resultHtml, userInfo, onBack }: Results
 
         {/* Result Content with Traditional Styling */}
         <div 
-          className={`kundli-sections space-y-6 ${isPlaying ? 'voice-reading' : ''}`}
+          className="kundli-sections space-y-6"
           dangerouslySetInnerHTML={{ 
             __html: resultHtml
           }}
