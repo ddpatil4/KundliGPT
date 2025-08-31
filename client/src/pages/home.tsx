@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { CheckCircle } from "lucide-react";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
@@ -7,10 +7,12 @@ import LoadingState from "@/components/loading-state";
 import ResultsDisplay from "@/components/results-display";
 import FAQSection from "@/components/faq-section";
 import { type KundliFormData } from "@shared/schema";
+import { useSiteConfig } from "@/hooks/useSetup";
 
 export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
   const [results, setResults] = useState<{ resultHtml: string; formData: KundliFormData } | null>(null);
+  const { siteName, siteDescription, siteKeywords } = useSiteConfig();
 
   const handleResult = (result: any, formData: KundliFormData) => {
     setIsLoading(false);
@@ -34,6 +36,33 @@ export default function Home() {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }, 100);
   };
+
+  // Update document title and meta tags
+  useEffect(() => {
+    document.title = siteName;
+    
+    // Update meta description
+    const metaDescription = document.querySelector('meta[name="description"]');
+    if (metaDescription) {
+      metaDescription.setAttribute('content', siteDescription);
+    } else {
+      const meta = document.createElement('meta');
+      meta.name = 'description';
+      meta.content = siteDescription;
+      document.head.appendChild(meta);
+    }
+    
+    // Update meta keywords
+    const metaKeywords = document.querySelector('meta[name="keywords"]');
+    if (metaKeywords) {
+      metaKeywords.setAttribute('content', siteKeywords);
+    } else {
+      const meta = document.createElement('meta');
+      meta.name = 'keywords';
+      meta.content = siteKeywords;
+      document.head.appendChild(meta);
+    }
+  }, [siteName, siteDescription, siteKeywords]);
 
   return (
     <div className="min-h-screen">

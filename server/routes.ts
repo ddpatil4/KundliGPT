@@ -1,7 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { insertContactMessageSchema, kundliFormSchema, insertUserSchema, insertCategorySchema, insertPostSchema } from "@shared/schema";
+import { insertContactMessageSchema, kundliFormSchema, insertUserSchema, insertCategorySchema, insertPostSchema, insertSiteConfigSchema } from "@shared/schema";
 import OpenAI from "openai";
 import bcrypt from "bcryptjs";
 import session from "express-session";
@@ -518,6 +518,122 @@ IMPORTANT: Return ONLY HTML without any markdown formatting or code blocks. Use 
     
     res.header('Content-Type', 'application/xml');
     res.send(sitemap);
+  });
+
+  // Setup wizard endpoint
+  app.post("/api/setup", async (req, res) => {
+    try {
+      // Check if setup is already complete
+      const existingConfig = await storage.getSiteConfig();
+      if (existingConfig?.isSetupComplete) {
+        return res.status(400).json({ ok: false, error: "Setup already completed" });
+      }
+
+      const setupData = req.body;
+      
+      // Validate the setup data
+      const setupSchema = z.object({
+        siteName: z.string().min(1),
+        siteDescription: z.string().min(1),
+        siteKeywords: z.string().min(1),
+        openaiApiKey: z.string().min(1),
+        adminUsername: z.string().min(3),
+        adminPassword: z.string().min(6),
+        adminPasswordConfirm: z.string(),
+      }).refine((data) => data.adminPassword === data.adminPasswordConfirm, {
+        message: "Passwords don't match",
+        path: ["adminPasswordConfirm"],
+      });
+
+      const validatedData = setupSchema.parse(setupData);
+
+      // Check if admin username already exists
+      const existingUser = await storage.getUserByUsername(validatedData.adminUsername);
+      if (existingUser) {
+        return res.status(400).json({ ok: false, error: "Username already exists" });
+      }
+
+      // Hash the admin password
+      const hashedPassword = await bcrypt.hash(validatedData.adminPassword, 12);
+
+      // Create admin user
+      const adminUser = await storage.createUser({
+        username: validatedData.adminUsername,
+        password: hashedPassword,
+        isAdmin: true
+      });
+
+      // Store site configuration
+      const siteConfigData = {
+        siteName: validatedData.siteName,
+        siteDescription: validatedData.siteDescription,
+        siteKeywords: validatedData.siteKeywords,
+        openaiApiKey: validatedData.openaiApiKey,
+        isSetupComplete: true
+      };
+
+      let savedConfig;
+      if (existingConfig) {
+        savedConfig = await storage.updateSiteConfig(existingConfig.id, siteConfigData);
+      } else {
+        savedConfig = await storage.createSiteConfig(siteConfigData);
+      }
+
+      // Auto-login the admin user
+      req.session.userId = adminUser.id;
+      req.session.isAdmin = true;
+
+      res.json({ 
+        ok: true, 
+        message: "Setup completed successfully",
+        config: savedConfig,
+        user: { id: adminUser.id, username: adminUser.username, isAdmin: adminUser.isAdmin }
+      });
+    } catch (error) {
+      console.error("Setup error:", error);
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ ok: false, error: "Invalid setup data", details: error.errors });
+      }
+      res.status(500).json({ ok: false, error: "Setup failed" });
+    }
+  });
+
+  // Check setup status endpoint
+  app.get("/api/setup/status", async (req, res) => {
+    try {
+      const config = await storage.getSiteConfig();
+      res.json({ 
+        ok: true, 
+        isSetupComplete: config?.isSetupComplete || false,
+        siteName: config?.siteName || "Hindi Kundli Insight"
+      });
+    } catch (error) {
+      console.error("Setup status error:", error);
+      res.status(500).json({ ok: false, error: "Failed to check setup status" });
+    }
+  });
+
+  // Get site configuration endpoint
+  app.get("/api/site-config", async (req, res) => {
+    try {
+      const config = await storage.getSiteConfig();
+      if (!config || !config.isSetupComplete) {
+        return res.json({
+          siteName: "Hindi Kundli Insight",
+          siteDescription: "Get personalized Hindi astrological guidance and kundli insights",
+          siteKeywords: "kundli, astrology, hindi, horoscope, jyotish, राशिफल"
+        });
+      }
+      
+      res.json({
+        siteName: config.siteName,
+        siteDescription: config.siteDescription,
+        siteKeywords: config.siteKeywords
+      });
+    } catch (error) {
+      console.error("Site config error:", error);
+      res.status(500).json({ ok: false, error: "Failed to get site configuration" });
+    }
   });
 
   const httpServer = createServer(app);

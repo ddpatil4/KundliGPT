@@ -4,6 +4,7 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { LanguageProvider } from "@/hooks/use-language";
+import { useSetup } from "@/hooks/useSetup";
 import Home from "@/pages/home";
 import Privacy from "@/pages/privacy";
 import Terms from "@/pages/terms";
@@ -17,11 +18,38 @@ import AdminCategories from "@/pages/admin-categories";
 import AdminPostEditor from "@/pages/admin-post-editor";
 import Blog from "@/pages/blog";
 import BlogPost from "@/pages/blog-post";
+import SetupWizard from "@/pages/setup-wizard";
 import NotFound from "@/pages/not-found";
 
 function Router() {
+  const { isSetupComplete, isLoading } = useSetup();
+
+  // Show loading spinner while checking setup status
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-orange-50 to-amber-50">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-orange-500 mx-auto"></div>
+          <p className="mt-4 text-gray-600 text-lg">Loading Hindi Kundli Insight...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // If setup is not complete, only show setup wizard
+  if (!isSetupComplete) {
+    return (
+      <Switch>
+        <Route path="/setup" component={SetupWizard} />
+        <Route component={SetupWizard} />
+      </Switch>
+    );
+  }
+
+  // If setup is complete, show all routes
   return (
     <Switch>
+      <Route path="/setup" component={SetupWizard} />
       <Route path="/" component={Home} />
       <Route path="/privacy" component={Privacy} />
       <Route path="/terms" component={Terms} />

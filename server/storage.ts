@@ -1,5 +1,5 @@
-import { type User, type InsertUser, type ContactMessage, type InsertContactMessage, type Category, type InsertCategory, type Post, type InsertPost } from "@shared/schema";
-import { users, categories, posts, contactMessages } from "@shared/schema";
+import { type User, type InsertUser, type ContactMessage, type InsertContactMessage, type Category, type InsertCategory, type Post, type InsertPost, type SiteConfig, type InsertSiteConfig } from "@shared/schema";
+import { users, categories, posts, contactMessages, siteConfig } from "@shared/schema";
 import { db } from "./db";
 import { eq } from "drizzle-orm";
 import { randomUUID } from "crypto";
@@ -13,6 +13,9 @@ export interface IStorage {
   // Categories
   getCategories(): Promise<Category[]>;
   createCategory(category: InsertCategory): Promise<Category>;
+  getCategoryById(id: number): Promise<Category | undefined>;
+  getCategoryBySlug(slug: string): Promise<Category | undefined>;
+  updateCategory(id: number, category: InsertCategory): Promise<Category>;
   deleteCategory(id: number): Promise<boolean>;
   
   // Posts
@@ -21,6 +24,11 @@ export interface IStorage {
   createPost(post: InsertPost & { authorId: string }): Promise<Post>;
   updatePost(id: number, post: InsertPost): Promise<Post>;
   deletePost(id: number): Promise<void>;
+  
+  // Site Configuration
+  getSiteConfig(): Promise<SiteConfig | undefined>;
+  createSiteConfig(config: InsertSiteConfig): Promise<SiteConfig>;
+  updateSiteConfig(id: number, config: Partial<InsertSiteConfig>): Promise<SiteConfig>;
 }
 
 export class MemStorage implements IStorage {
@@ -259,6 +267,29 @@ export class DatabaseStorage implements IStorage {
 
   async deletePost(id: number): Promise<void> {
     await db.delete(posts).where(eq(posts.id, id));
+  }
+
+  // Site Configuration
+  async getSiteConfig(): Promise<SiteConfig | undefined> {
+    const [config] = await db.select().from(siteConfig).limit(1);
+    return config || undefined;
+  }
+
+  async createSiteConfig(configData: InsertSiteConfig): Promise<SiteConfig> {
+    const [config] = await db
+      .insert(siteConfig)
+      .values(configData)
+      .returning();
+    return config;
+  }
+
+  async updateSiteConfig(id: number, configData: Partial<InsertSiteConfig>): Promise<SiteConfig> {
+    const [config] = await db
+      .update(siteConfig)
+      .set({ ...configData, updatedAt: new Date() })
+      .where(eq(siteConfig.id, id))
+      .returning();
+    return config;
   }
 }
 

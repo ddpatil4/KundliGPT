@@ -42,6 +42,17 @@ export const contactMessages = pgTable("contact_messages", {
   createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`).notNull(),
 });
 
+export const siteConfig = pgTable("site_config", {
+  id: serial("id").primaryKey(),
+  siteName: text("site_name").notNull(),
+  siteDescription: text("site_description").notNull(),
+  siteKeywords: text("site_keywords").notNull(),
+  openaiApiKey: text("openai_api_key").notNull(),
+  isSetupComplete: boolean("is_setup_complete").default(false).notNull(),
+  createdAt: timestamp("created_at").default(sql`CURRENT_TIMESTAMP`).notNull(),
+  updatedAt: timestamp("updated_at").default(sql`CURRENT_TIMESTAMP`).notNull(),
+});
+
 // Relations
 export const usersRelations = relations(users, ({ many }) => ({
   posts: many(posts),
@@ -91,6 +102,14 @@ export const insertPostSchema = createInsertSchema(posts).pick({
   categoryId: true,
 });
 
+export const insertSiteConfigSchema = createInsertSchema(siteConfig).pick({
+  siteName: true,
+  siteDescription: true,
+  siteKeywords: true,
+  openaiApiKey: true,
+  isSetupComplete: true,
+});
+
 // Kundli form validation schema
 export const kundliFormSchema = z.object({
   name: z.string().min(1, "नाम आवश्यक है"),
@@ -112,4 +131,6 @@ export type InsertCategory = z.infer<typeof insertCategorySchema>;
 export type Category = typeof categories.$inferSelect;
 export type InsertPost = z.infer<typeof insertPostSchema>;
 export type Post = typeof posts.$inferSelect;
+export type InsertSiteConfig = z.infer<typeof insertSiteConfigSchema>;
+export type SiteConfig = typeof siteConfig.$inferSelect;
 export type KundliFormData = z.infer<typeof kundliFormSchema>;
