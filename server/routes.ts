@@ -520,6 +520,97 @@ IMPORTANT: Return ONLY HTML without any markdown formatting or code blocks. Use 
     res.send(sitemap);
   });
 
+  // PHP-style complete setup endpoint
+  app.post("/api/setup-complete", async (req, res) => {
+    try {
+      // Check if setup is already complete
+      const existingConfig = await storage.getSiteConfig();
+      if (existingConfig?.isSetupComplete) {
+        return res.status(400).json({ ok: false, error: "Setup already completed" });
+      }
+
+      const setupData = req.body;
+      
+      // Create database connection URL from individual fields
+      const dbUrl = `postgresql://${setupData.dbUsername}:${setupData.dbPassword}@${setupData.dbHost}:${setupData.dbPort}/${setupData.dbName}`;
+      
+      // Generate config.js file content
+      const configContent = `module.exports = {
+  database: {
+    host: "${setupData.dbHost}",
+    port: ${setupData.dbPort},
+    database: "${setupData.dbName}",
+    username: "${setupData.dbUsername}",
+    password: "${setupData.dbPassword}",
+    url: "${dbUrl}"
+  },
+  security: {
+    sessionSecret: "${Math.random().toString(36).substring(2) + Math.random().toString(36).substring(2)}"
+  },
+  server: {
+    port: 5000,
+    environment: "production"
+  },
+  site: {
+    name: "${setupData.siteName}",
+    description: "${setupData.siteDescription}",
+    keywords: "${setupData.siteKeywords}"
+  },
+  apis: {
+    openai: "${setupData.openaiApiKey}"
+  }
+};`;
+
+      // Write config.js file
+      const { createRequire } = await import('module');
+      const require = createRequire(import.meta.url);
+      const fs = require('fs');
+      const path = require('path');
+      const configPath = path.join(process.cwd(), 'config.js');
+      fs.writeFileSync(configPath, configContent);
+
+      // Hash the admin password
+      const hashedPassword = await bcrypt.hash(setupData.adminPassword, 12);
+
+      // Create admin user
+      const adminUser = await storage.createUser({
+        username: setupData.adminUsername,
+        password: hashedPassword,
+        isAdmin: true
+      });
+
+      // Store site configuration
+      const siteConfigData = {
+        siteName: setupData.siteName,
+        siteDescription: setupData.siteDescription,
+        siteKeywords: setupData.siteKeywords,
+        openaiApiKey: setupData.openaiApiKey,
+        isSetupComplete: true
+      };
+
+      let savedConfig;
+      if (existingConfig) {
+        savedConfig = await storage.updateSiteConfig(existingConfig.id, siteConfigData);
+      } else {
+        savedConfig = await storage.createSiteConfig(siteConfigData);
+      }
+
+      // Auto-login the admin user
+      req.session.userId = adminUser.id;
+      req.session.isAdmin = true;
+
+      res.json({ 
+        ok: true, 
+        message: "Setup completed successfully! config.js file created.",
+        config: savedConfig,
+        user: { id: adminUser.id, username: adminUser.username, isAdmin: adminUser.isAdmin }
+      });
+    } catch (error) {
+      console.error("Setup error:", error);
+      res.status(500).json({ ok: false, error: "Setup failed: " + error.message });
+    }
+  });
+
   // Setup wizard endpoint
   app.post("/api/setup", async (req, res) => {
     try {

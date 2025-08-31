@@ -19,6 +19,7 @@ import AdminPostEditor from "@/pages/admin-post-editor";
 import Blog from "@/pages/blog";
 import BlogPost from "@/pages/blog-post";
 import SetupWizard from "@/pages/setup-wizard";
+import SetupWizardDB from "@/pages/setup-wizard-db";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -41,7 +42,8 @@ function Router() {
     return (
       <Switch>
         <Route path="/setup" component={SetupWizard} />
-        <Route component={SetupWizard} />
+        <Route path="/setup-db" component={SetupWizardDB} />
+        <Route component={SetupWizardDB} />
       </Switch>
     );
   }
@@ -50,6 +52,7 @@ function Router() {
   return (
     <Switch>
       <Route path="/setup" component={SetupWizard} />
+      <Route path="/setup-db" component={SetupWizardDB} />
       <Route path="/" component={Home} />
       <Route path="/privacy" component={Privacy} />
       <Route path="/terms" component={Terms} />
