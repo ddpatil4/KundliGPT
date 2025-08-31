@@ -263,16 +263,17 @@ export default function AdminPosts() {
                             </Link>
                           )}
                           
-                          <Button 
-                            variant="outline" 
-                            size="sm" 
-                            className="flex items-center gap-1"
-                            onClick={() => {/* TODO: Add edit functionality */}}
-                            data-testid={`button-edit-${post.id}`}
-                          >
-                            <Edit className="h-4 w-4" />
-                            Edit
-                          </Button>
+                          <Link href={`/admin/posts/edit/${post.id}`}>
+                            <Button 
+                              variant="outline" 
+                              size="sm" 
+                              className="flex items-center gap-1"
+                              data-testid={`button-edit-${post.id}`}
+                            >
+                              <Edit className="h-4 w-4" />
+                              Edit
+                            </Button>
+                          </Link>
                           
                           <Button 
                             variant="destructive" 

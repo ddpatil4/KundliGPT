@@ -367,16 +367,23 @@ IMPORTANT: Return ONLY HTML without any markdown formatting or code blocks. Use 
     }
   });
 
+  // Update post endpoint
   app.put("/api/posts/:id", requireAdmin, async (req, res) => {
     try {
+      const postId = parseInt(req.params.id);
+      if (isNaN(postId)) {
+        return res.status(400).json({ ok: false, error: "Invalid post ID" });
+      }
+      
       const postData = insertPostSchema.parse(req.body);
-      const post = await storage.updatePost(parseInt(req.params.id), postData);
+      const post = await storage.updatePost(postId, postData);
       res.json({ ok: true, post });
     } catch (error: any) {
       console.error("Update post error:", error);
       res.status(400).json({ ok: false, error: error.message });
     }
   });
+
 
   app.delete("/api/posts/:id", requireAdmin, async (req, res) => {
     try {

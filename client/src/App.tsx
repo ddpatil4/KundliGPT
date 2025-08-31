@@ -33,6 +33,7 @@ function Router() {
       <Route path="/admin/posts" component={AdminPosts} />
       <Route path="/admin/categories" component={AdminCategories} />
       <Route path="/admin/posts/new" component={AdminPostEditor} />
+      <Route path="/admin/posts/edit/:id" component={AdminPostEditor} />
       <Route component={NotFound} />
     </Switch>
   );

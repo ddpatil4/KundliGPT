@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { useLocation, Link } from "wouter";
+import { useLocation, Link, useParams } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -38,9 +38,13 @@ function generateSlug(title: string): string {
 
 export default function AdminPostEditor() {
   const [, setLocation] = useLocation();
+  const params = useParams();
   const { toast } = useToast();
   const { isAuthenticated, isAdmin, isLoading } = useAuth();
   const queryClient = useQueryClient();
+  
+  const isEditMode = !!params.id;
+  const postId = params.id ? parseInt(params.id) : null;
 
   const form = useForm<PostFormData>({
     resolver: zodResolver(postSchema),
@@ -62,44 +66,74 @@ export default function AdminPostEditor() {
     }
   }, [isAuthenticated, isAdmin, isLoading, setLocation]);
 
-  // Auto-generate slug from title
+  // Load existing post data in edit mode
+  useEffect(() => {
+    if (isEditMode && postData?.post) {
+      const post = postData.post;
+      form.reset({
+        title: post.title,
+        slug: post.slug,
+        content: post.content,
+        excerpt: post.excerpt || "",
+        featuredImage: post.featuredImage || "",
+        status: post.status as "draft" | "published",
+        categoryId: post.categoryId || undefined,
+      });
+    }
+  }, [postData, isEditMode, form]);
+
+  // Auto-generate slug from title (only for new posts)
   const watchedTitle = form.watch("title");
   useEffect(() => {
-    if (watchedTitle && !form.getValues("slug")) {
+    if (!isEditMode && watchedTitle && !form.getValues("slug")) {
       form.setValue("slug", generateSlug(watchedTitle));
     }
-  }, [watchedTitle, form]);
+  }, [watchedTitle, form, isEditMode]);
 
   // Fetch categories
   const { data: categoriesData } = useQuery({
     queryKey: ["/api/categories"],
   });
 
-  // Create post mutation
-  const createPostMutation = useMutation({
+  // Fetch existing post data for edit mode
+  const { data: postData, isLoading: postLoading } = useQuery({
+    queryKey: ["/api/posts", postId],
+    enabled: isEditMode && !!postId,
+  });
+
+  // Save post mutation (create or update)
+  const savePostMutation = useMutation({
     mutationFn: async (data: PostFormData) => {
-      const response = await apiRequest("POST", "/api/posts", data);
-      return await response.json();
+      if (isEditMode && postId) {
+        const response = await apiRequest("PUT", `/api/posts/${postId}`, data);
+        return await response.json();
+      } else {
+        const response = await apiRequest("POST", "/api/posts", data);
+        return await response.json();
+      }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/posts"] });
+      if (isEditMode) {
+        queryClient.invalidateQueries({ queryKey: ["/api/posts", postId] });
+      }
       toast({
         title: "Success",
-        description: "Post created successfully!",
+        description: isEditMode ? "Post updated successfully!" : "Post created successfully!",
       });
-      setLocation("/admin");
+      setLocation("/admin/posts");
     },
     onError: (error: any) => {
       toast({
         title: "Error",
-        description: error.message || "Failed to create post",
+        description: error.message || (isEditMode ? "Failed to update post" : "Failed to create post"),
         variant: "destructive",
       });
     },
   });
 
   const onSubmit = (data: PostFormData) => {
-    createPostMutation.mutate(data);
+    savePostMutation.mutate(data);
   };
 
   const handleSaveAsDraft = () => {
@@ -140,27 +174,27 @@ export default function AdminPostEditor() {
                   Back to Dashboard
                 </Button>
               </Link>
-              <h1 className="text-3xl font-bold text-gray-900">Add New Post</h1>
+              <h1 className="text-3xl font-bold text-gray-900">{isEditMode ? "Edit Post" : "Add New Post"}</h1>
             </div>
             <div className="flex gap-2">
               <Button
                 onClick={handleSaveAsDraft}
                 variant="outline"
-                disabled={createPostMutation.isPending}
+                disabled={savePostMutation.isPending}
                 className="flex items-center gap-2"
                 data-testid="button-save-draft"
               >
                 <Save className="h-4 w-4" />
-                Save Draft
+{isEditMode ? "Save Draft" : "Save Draft"}
               </Button>
               <Button
                 onClick={handlePublish}
                 className="bg-orange-500 hover:bg-orange-600 text-white flex items-center gap-2"
-                disabled={createPostMutation.isPending}
+                disabled={savePostMutation.isPending}
                 data-testid="button-publish"
               >
                 <Eye className="h-4 w-4" />
-                {createPostMutation.isPending ? "Publishing..." : "Publish"}
+                {savePostMutation.isPending ? (isEditMode ? "Updating..." : "Publishing...") : (isEditMode ? "Update" : "Publish")}
               </Button>
             </div>
           </div>
