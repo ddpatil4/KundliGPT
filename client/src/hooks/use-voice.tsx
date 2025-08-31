@@ -106,102 +106,149 @@ export const useVoice = (): UseVoiceReturn => {
   }, []);
 
   const speak = useCallback((text: string, language?: string) => {
-    if (!isSupported || !text.trim()) return;
+    try {
+      if (!isSupported || !text.trim()) return;
 
-    // Stop any ongoing speech
-    speechSynthesis.cancel();
-    
-    // Wait a moment for cancellation to complete
-    setTimeout(() => {
-      // Clean the text for better pronunciation
-      let cleanText = text
-        .replace(/<[^>]*>/g, '') // Remove HTML tags
-        .replace(/\d+\./g, '') // Remove numbering
-        .replace(/\s+/g, ' ') // Clean multiple spaces
-        .trim();
-
-      if (!cleanText) return;
-
-      const targetLanguage = language || settings.language;
+      // Stop any ongoing speech
+      speechSynthesis.cancel();
       
-      // Apply Hindi-specific improvements
-      if (targetLanguage.startsWith('hi')) {
-        cleanText = improveHindiPronunciation(cleanText);
-      }
+      // Wait a moment for cancellation to complete
+      setTimeout(() => {
+        try {
+          // Clean the text for better pronunciation
+          let cleanText = text
+            .replace(/<[^>]*>/g, '') // Remove HTML tags
+            .replace(/\d+\./g, '') // Remove numbering
+            .replace(/\s+/g, ' ') // Clean multiple spaces
+            .trim();
 
-      const utterance = new SpeechSynthesisUtterance(cleanText);
-      
-      // Set voice properties
-      utterance.rate = settings.rate;
-      utterance.pitch = settings.pitch;
-      utterance.volume = settings.volume;
-      utterance.lang = targetLanguage;
+          if (!cleanText) return;
 
-      // Find and set appropriate voice
-      const voice = getVoiceForLanguage(targetLanguage);
-      if (voice) {
-        utterance.voice = voice;
-      }
+          const targetLanguage = language || settings.language;
+          
+          // Apply Hindi-specific improvements
+          if (targetLanguage.startsWith('hi')) {
+            cleanText = improveHindiPronunciation(cleanText);
+          }
 
-      // Set up event listeners
-      utterance.onstart = () => {
-        setIsPlaying(true);
-        setIsPaused(false);
-      };
+          const utterance = new SpeechSynthesisUtterance(cleanText);
+          
+          // Set voice properties
+          utterance.rate = settings.rate;
+          utterance.pitch = settings.pitch;
+          utterance.volume = settings.volume;
+          utterance.lang = targetLanguage;
 
-      utterance.onend = () => {
-        setIsPlaying(false);
-        setIsPaused(false);
-        setCurrentUtterance(null);
-      };
+          // Find and set appropriate voice
+          const voice = getVoiceForLanguage(targetLanguage);
+          if (voice) {
+            utterance.voice = voice;
+          }
+
+          // Set up event listeners
+          utterance.onstart = () => {
+            setIsPlaying(true);
+            setIsPaused(false);
+          };
+
+          utterance.onend = () => {
+            setIsPlaying(false);
+            setIsPaused(false);
+            setCurrentUtterance(null);
+          };
 
       utterance.onerror = (event) => {
-        console.log('Speech synthesis error:', event.error);
-        // Reset state on any error
-        setIsPlaying(false);
-        setIsPaused(false);
-        setCurrentUtterance(null);
-        
-        // Retry once if interrupted
-        if (event.error === 'interrupted' || event.error === 'canceled') {
-          setTimeout(() => {
-            if (!speechSynthesis.speaking) {
-              speechSynthesis.speak(utterance);
-            }
-          }, 100);
+        try {
+          console.log('Speech synthesis error:', event.error);
+          // Reset state on any error
+          setIsPlaying(false);
+          setIsPaused(false);
+          setCurrentUtterance(null);
+          
+          // Don't retry on interrupt errors to avoid loops
+          if (event.error === 'interrupted' || event.error === 'canceled') {
+            // Just reset state, don't retry
+            return;
+          }
+          
+          // Only retry on network or other recoverable errors
+          if (event.error === 'network' || event.error === 'synthesis-failed') {
+            setTimeout(() => {
+              if (!speechSynthesis.speaking && !speechSynthesis.paused) {
+                speechSynthesis.speak(utterance);
+              }
+            }, 500);
+          }
+        } catch (error) {
+          // Catch any errors in error handling itself
+          console.log('Error in speech error handler:', error);
+          setIsPlaying(false);
+          setIsPaused(false);
+          setCurrentUtterance(null);
         }
       };
 
-      utterance.onpause = () => {
-        setIsPaused(true);
-      };
+          utterance.onpause = () => {
+            setIsPaused(true);
+          };
 
-      utterance.onresume = () => {
-        setIsPaused(false);
-      };
+          utterance.onresume = () => {
+            setIsPaused(false);
+          };
 
-      setCurrentUtterance(utterance);
-      speechSynthesis.speak(utterance);
-    }, 100);
+          setCurrentUtterance(utterance);
+          speechSynthesis.speak(utterance);
+        } catch (innerError) {
+          console.log('Error in speech synthesis:', innerError);
+          setIsPlaying(false);
+          setIsPaused(false);
+          setCurrentUtterance(null);
+        }
+      }, 100);
+    } catch (error) {
+      console.log('Error in speak function:', error);
+      setIsPlaying(false);
+      setIsPaused(false);
+      setCurrentUtterance(null);
+    }
   }, [isSupported, settings, getVoiceForLanguage, improveHindiPronunciation]);
 
   const pause = useCallback(() => {
-    if (speechSynthesis.speaking && !speechSynthesis.paused) {
-      speechSynthesis.pause();
+    try {
+      if (speechSynthesis.speaking && !speechSynthesis.paused) {
+        speechSynthesis.pause();
+      }
+    } catch (error) {
+      console.log('Error pausing speech:', error);
+      setIsPlaying(false);
+      setIsPaused(false);
     }
   }, []);
 
   const resume = useCallback(() => {
-    if (speechSynthesis.paused) {
-      speechSynthesis.resume();
+    try {
+      if (speechSynthesis.paused) {
+        speechSynthesis.resume();
+      }
+    } catch (error) {
+      console.log('Error resuming speech:', error);
+      setIsPlaying(false);
+      setIsPaused(false);
     }
   }, []);
 
   const stop = useCallback(() => {
-    speechSynthesis.cancel();
-    setIsPlaying(false);
-    setIsPaused(false);
-    setCurrentUtterance(null);
+    try {
+      speechSynthesis.cancel();
+      setIsPlaying(false);
+      setIsPaused(false);
+      setCurrentUtterance(null);
+    } catch (error) {
+      console.log('Error stopping speech:', error);
+      setIsPlaying(false);
+      setIsPaused(false);
+      setCurrentUtterance(null);
+    }
   }, []);
 
   const updateSettings = useCallback((newSettings: Partial<VoiceSettings>) => {

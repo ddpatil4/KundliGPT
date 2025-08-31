@@ -63,26 +63,52 @@ export default function ResultsDisplay({ resultHtml, userInfo, onBack }: Results
   };
 
   const handleVoicePlay = () => {
-    if (isPlaying && !isPaused) {
-      pause();
-    } else if (isPaused) {
-      resume();
-    } else {
-      // Extract text content and detect language
-      const tempDiv = document.createElement('div');
-      tempDiv.innerHTML = resultHtml;
-      const textContent = tempDiv.textContent || '';
-      
-      // Simple language detection based on content
-      const hasHindi = /[\u0900-\u097F]/.test(textContent);
-      const language = hasHindi ? 'hi-IN' : 'en-US';
-      
-      speak(textContent, language);
+    try {
+      if (isPlaying && !isPaused) {
+        pause();
+      } else if (isPaused) {
+        resume();
+      } else {
+        // Extract text content and detect language
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = resultHtml;
+        const textContent = tempDiv.textContent || '';
+        
+        if (!textContent.trim()) {
+          toast({
+            title: "कोई टेक्स्ट नहीं मिला",
+            description: "सुनने के लिए कोई सामग्री नहीं है।",
+          });
+          return;
+        }
+        
+        // Simple language detection based on content
+        const hasHindi = /[\u0900-\u097F]/.test(textContent);
+        const language = hasHindi ? 'hi-IN' : 'en-US';
+        
+        speak(textContent, language);
+      }
+    } catch (error) {
+      console.log('Error in voice play handler:', error);
+      toast({
+        title: "आवाज़ एरर",
+        description: "आवाज़ प्ले करने में समस्या हुई।",
+        variant: "destructive"
+      });
     }
   };
 
   const handleVoiceStop = () => {
-    stop();
+    try {
+      stop();
+    } catch (error) {
+      console.log('Error stopping voice:', error);
+      toast({
+        title: "आवाज़ एरर",
+        description: "आवाज़ बंद करने में समस्या हुई।",
+        variant: "destructive"
+      });
+    }
   };
 
   return (
