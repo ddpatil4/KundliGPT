@@ -1,0 +1,201 @@
+Title: Build a Hindi Kundli Insight web app (Next.js 14 + Tailwind, AdSense-friendly)
+
+What to build:
+Make a production-ready, mobile-first web app that generates Hindi kundli-style insights using my OpenAI API key. The app must not claim guaranteed predictions; show helpful, respectful, non-medical guidance only. Focus on great UX on modern phones and AdSense-friendly structure.
+
+Tech Stack
+
+Next.js 14 (App Router) + TypeScript
+
+Tailwind CSS for styling
+
+API route at /api/interpret using OpenAI official Node SDK (openai) via my OPENAI_API_KEY from environment
+
+Deployed server should be SSR/ISR-friendly and fast (image lazy-load, script defer)
+
+Core Features
+
+Home Page (/)
+
+Clean hero header: “हिंदी कुंडली—व्यावहारिक मार्गदर्शन”
+
+Form fields (with labels + examples):
+
+नाम (text)
+
+जन्म तिथि (date, required)
+
+जन्म समय (time, required)
+
+समय क्षेत्र/UTC ऑफ़सेट (number step 0.25; default 5.5 for IST)
+
+जन्म स्थान (city text; optional)
+
+latitude (number), longitude (number) — optional; agar blank ho to city string pass kar dena
+
+Validate required fields; show friendly inline errors
+
+On submit, call /api/interpret and render a Result Card with headings (see “Output spec”)
+
+Loader skeleton while waiting; errors in a toast
+
+Result Sections (Hindi)
+OpenAI se structured content lao with these sections (use clear <h2> headings + bullet points):
+
+समग्र सार (2 छोटे पैराग्राफ)
+
+शादी के संभावित अवसर: realistic वर्ष-रेंज विंडो (e.g., “2026–2028”); tone = संभावना, निश्चित दावा नहीं
+
+संतान के संभावित अवसर: वर्ष-रेंज/चरण; जिम्मेदार भाषा
+
+करियर उपयुक्तता: 3–5 रास्ते (जैसे IT, डिजाइन, शिक्षा, सेल्स, वित्त, इत्यादि)
+
+जल्दी सफलता किस फ़ील्ड में: 3 शॉर्ट bullet points + “क्यों” (1-liner each)
+
+कौशल/पढ़ाई सुझाव: सीखने के टॉपिक्स, शुरुआती roadmap
+
+सामान्य सुझाव/उपाय: नैतिक/व्यावहारिक आदतें (time-management, communication, networking), धार्मिक/चिकित्सकीय दावों से बचें
+
+महत्वपूर्ण अस्वीकरण: “ये अंतर्दृष्टि सांकेतिक हैं, पक्की भविष्यवाणी नहीं; स्वास्थ्य/वित्त/कानूनी फैसलों के लिए विशेषज्ञ से सलाह लें.”
+
+Policy/Trust Pages (footer nav)
+
+/privacy, /terms, /about, /contact
+
+Simple content in Hindi, AdSense-friendly; Contact page with working form (no captcha needed); should POST to /api/contact (store to log + return 200)
+
+AdSense-Friendly & SEO
+
+Clean layout (no intrusive popups)
+
+FAQ schema (JSON-LD) on Home with 4–6 Hindi FAQs (e.g., “क्या ट्रैफिक जरूरी है?” “क्या ये पक्की भविष्यवाणी है?”)
+
+/sitemap.xml & robots.txt
+
+Meta tags: Hindi title/description; OpenGraph basic
+
+Fast LCP: use Tailwind, minimal JS, images next/image if any
+
+UI/UX
+
+Cards with rounded-xl, soft shadow, ample spacing
+
+Mobile-first grid; sticky footer with policy links
+
+Save last inputs to localStorage (name/date/time/offset/city) to auto-prefill next time
+
+“Copy result” button + “Download as PDF” (client-side print to PDF friendly CSS)
+
+Rate limiting & safety
+
+Simple per-IP rate limit: max 10 requests/10 min (in-memory ok)
+
+Reject empty/malformed input; sanitize strings
+
+Absolute no medical/financial guarantees; include disclaimer block on results
+
+OpenAI Integration
+
+Install: npm i openai zod dayjs
+
+Env: Use process.env.OPENAI_API_KEY
+
+Model: gpt-4o-mini (or a capable text model) via Responses API
+
+Create /api/interpret/route.ts (Next.js App Router) that:
+
+Validates input with zod:
+
+{
+  name: string.min(1),
+  birthDate: string,   // YYYY-MM-DD
+  birthTime: string,   // HH:mm (24h)
+  tzOffset: number,    // e.g. 5.5
+  city?: string,
+  lat?: number,
+  lon?: number
+}
+
+
+Builds a system prompt to keep tone helpful & cautious (Hindi output)
+
+Builds a user prompt injecting the fields; you may calculate a simple “demo” tag like contextNote: "Ephemeris not used; insights are generalized" to be transparent
+
+Calls OpenAI Responses API and returns json: { ok: true, resultHtml } where resultHtml contains semantic HTML with the required sections
+
+Example System Prompt (use verbatim)
+
+“तुम एक जिम्मेदार हिंदी असिस्टेंट हो जो कुंडली-शैली की व्यावहारिक और सम्मानपूर्ण सलाह देता/देती है। कोई स्वास्थ्य/चिकित्सा/कानूनी/आर्थिक दावे या गारंटी नहीं देता/देती। शादी/संतान/करियर से जुड़ी बातों को ‘संभावना’, ‘झुकाव’, ‘समय-विंडो’ जैसे शब्दों में, और व्यक्ति की मेहनत/परिस्थितियों पर निर्भर मानकर लिखो। भाषा सरल हिंदी, हेडिंग्स साफ़, बुलेट्स छोटे, और टोन सकारात्मक पर यथार्थवादी हो।”
+
+Example User Prompt Template (fill with inputs)
+उपयोगकर्ता इनपुट:
+- नाम: {{name}}
+- जन्म तिथि: {{birthDate}}
+- जन्म समय: {{birthTime}}
+- समय क्षेत्र (UTC offset): {{tzOffset}}
+- स्थान: {{city || `Lat ${lat}, Lon ${lon}`}}
+
+Context Note: यह एक सामान्यीकृत विश्लेषण है; सटीक खगोलीय गणना/इफ़ेमेरिस शामिल नहीं है।
+
+कृपया नीचे दिये सेक्शन्स में हिंदी में संरचित परिणाम दें:
+1) समग्र सार (2 छोटे पैराग्राफ)
+2) शादी के संभावित अवसर – वर्ष-रेंज विंडो (जैसे 2026–2028), निश्चित दावा नहीं
+3) संतान के संभावित अवसर – वर्ष-रेंज/चरण, जिम्मेदार भाषा
+4) करियर उपयुक्तता – 3–5 दिशाएँ + 1-लाइन क्यों
+5) जल्दी सफलता किस फ़ील्ड में – 3 बुलेट + कारण
+6) कौशल/पढ़ाई सुझाव – सीखने के विषय, शुरुआती रोडमैप
+7) सामान्य सुझाव/उपाय – नैतिक/व्यावहारिक आदतें (धार्मिक/चिकित्सकीय दावे नहीं)
+8) महत्वपूर्ण अस्वीकरण – मार्गदर्शन मात्र, गारंटी नहीं
+Format: साफ HTML (<h2>, <ul><li>, <p>) बिना inline styles के।
+
+Files to generate
+
+app/layout.tsx with clean base layout, Google fonts (system-ui fallback), SEO defaults
+
+app/page.tsx (Home) with form, client component for submit, loader, result card, copy/download buttons, and embedded FAQ schema via <script type="application/ld+json">
+
+app/privacy/page.tsx, app/terms/page.tsx, app/about/page.tsx, app/contact/page.tsx (contact form)
+
+app/api/interpret/route.ts (OpenAI call as above)
+
+app/api/contact/route.ts (store message to console and return 200)
+
+public/og.png, robots.txt, dynamic sitemap.ts
+
+tailwind.config.ts, postcss.config.js, globals.css with print-friendly styles
+
+Utility: simple in-memory rate limiter in /lib/ratelimit.ts
+
+Nice empty state & error state components
+
+Styling Details
+
+Use Tailwind with: max-w-screen-md mx-auto p-4 sm:p-6 layout
+
+Cards: rounded-2xl shadow-lg p-5 sm:p-6 bg-white on light gray background
+
+Inputs: large touch targets, labels in Hindi, examples under placeholders
+
+Buttons: primary “Generate” + secondary “Reset”; disabled state with spinner
+
+Result: Section headings <h2 class="text-xl font-semibold mt-6 mb-2"> and lists with comfortable line-height
+
+Acceptance Criteria
+
+On mobile, form and results are readable without zoom; CLS ~0
+
+OpenAI key read from env; if missing → user-friendly error banner
+
+Hindi output always; no deterministic claims; disclaimer visible
+
+Policy pages present in footer; no ads included yet (AdSense-ready structure)
+
+Lighthouse basics good (performance/SEO/accessibility)
+
+Please scaffold the full project and include minimal placeholder content for policy pages. Then run dev server.
+
+Setup notes for me (user)
+
+I will add OPENAI_API_KEY in Replit Secrets
+
+Then click Run and open the webview.
