@@ -309,6 +309,26 @@ IMPORTANT: Return ONLY HTML without any markdown formatting or code blocks. Use 
     }
   });
 
+  // Category deletion endpoint
+  app.delete("/api/categories/:id", requireAdmin, async (req, res) => {
+    try {
+      const categoryId = parseInt(req.params.id);
+      if (isNaN(categoryId)) {
+        return res.status(400).json({ ok: false, error: "Invalid category ID" });
+      }
+      
+      const deleted = await storage.deleteCategory(categoryId);
+      if (!deleted) {
+        return res.status(404).json({ ok: false, error: "Category not found" });
+      }
+      
+      res.json({ ok: true, message: "Category deleted successfully" });
+    } catch (error: any) {
+      console.error("Delete category error:", error);
+      res.status(500).json({ ok: false, error: error.message });
+    }
+  });
+
   // Posts Management Routes
   app.get("/api/posts", async (req, res) => {
     try {

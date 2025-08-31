@@ -13,6 +13,7 @@ export interface IStorage {
   // Categories
   getCategories(): Promise<Category[]>;
   createCategory(category: InsertCategory): Promise<Category>;
+  deleteCategory(id: number): Promise<boolean>;
   
   // Posts
   getPosts(): Promise<Post[]>;
@@ -118,6 +119,10 @@ export class MemStorage implements IStorage {
     return category;
   }
 
+  async deleteCategory(id: number): Promise<boolean> {
+    return this.categories.delete(id);
+  }
+
   // Posts
   async getPosts(): Promise<Post[]> {
     return Array.from(this.posts.values());
@@ -199,6 +204,11 @@ export class DatabaseStorage implements IStorage {
       .values(insertCategory)
       .returning();
     return category;
+  }
+
+  async deleteCategory(id: number): Promise<boolean> {
+    const result = await db.delete(categories).where(eq(categories.id, id));
+    return result.rowCount > 0;
   }
 
   // Posts
