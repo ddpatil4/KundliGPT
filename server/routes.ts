@@ -54,16 +54,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       const languageConfig = {
         hi: {
-          systemPrompt: "आप एक सहायक ज्योतिषीय गाइड हैं। जन्म की जानकारी के आधार पर व्यावहारिक जीवन मार्गदर्शन प्रदान करें। 8 प्रश्नों के संक्षिप्त उत्तर दें।",
-          questionFormat: "हिंदी में उत्तर दें"
+          systemPrompt: "आप एक सहायक ज्योतिषीय गाइड हैं। बहुत सरल भाषा में जवाब दें जैसे कि आप किसी 10 साल के बच्चे को समझा रहे हों। छोटे शब्द और आसान वाक्य इस्तेमाल करें। जन्म की जानकारी के आधार पर व्यावहारिक जीवन मार्गदर्शन प्रदान करें। 8 प्रश्नों के बहुत सरल उत्तर दें।",
+          questionFormat: "बहुत आसान हिंदी में उत्तर दें जो छोटे बच्चे भी समझ सकें"
         },
         en: {
-          systemPrompt: "You are a helpful life guidance counselor. Provide practical insights based on birth information. Answer 8 questions briefly.",
-          questionFormat: "Answer in English"
+          systemPrompt: "You are a helpful life guidance counselor. Use very simple language like you're explaining to a 10-year-old child. Use small words and easy sentences. Provide practical insights based on birth information. Answer 8 questions in very simple terms.",
+          questionFormat: "Answer in very simple English that children can understand"
         },
         mr: {
-          systemPrompt: "तुम्ही एक उपयुक्त जीवन मार्गदर्शक आहात. जन्माच्या माहितीवर आधारित व्यावहारिक सल्ला द्या. ८ प्रश्नांची उत्तरे द्या.",
-          questionFormat: "मराठी मध्ये उत्तर द्या"
+          systemPrompt: "तुम्ही एक उपयुक्त जीवन मार्गदर्शक आहात. अगदी साध्या भाषेत उत्तरे द्या जसे तुम्ही एखाद्या 10 वर्षाच्या मुलाला समजावून सांगत आहात. लहान शब्द आणि सोप्या वाक्यांचा वापर करा. जन्माच्या माहितीवर आधारित व्यावहारिक सल्ला द्या. ८ प्रश्नांची अगदी सरळ उत्तरे द्या.",
+          questionFormat: "अगदी सोप्या मराठी मध्ये उत्तर द्या जे लहान मुले समजू शकतील"
         }
       };
 

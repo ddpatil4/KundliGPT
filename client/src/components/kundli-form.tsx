@@ -316,11 +316,11 @@ export default function KundliForm({ onResult }: KundliFormProps) {
                 <Button 
                   type="submit"
                   disabled={interpretMutation.isPending}
-                  className="flex-1 bg-primary text-primary-foreground px-6 py-3 rounded-lg font-medium transition-all duration-200 hover:shadow-lg hover:scale-105 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="flex-1 bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-lg font-medium transition-all duration-200 hover:shadow-lg hover:scale-105 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
                   data-testid="button-generate"
                 >
-                  <span className="hindi-text">
-                    {interpretMutation.isPending ? "प्रसंस्करण..." : "कुंडली बनाएं"}
+                  <span className="font-semibold">
+                    {interpretMutation.isPending ? "Processing..." : "Generate Kundali"}
                   </span>
                 </Button>
                 
