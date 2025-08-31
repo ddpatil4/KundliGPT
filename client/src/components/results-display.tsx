@@ -9,9 +9,10 @@ interface ResultsDisplayProps {
     birthTime: string;
     birthPlace: string;
   };
+  onBack: () => void;
 }
 
-export default function ResultsDisplay({ resultHtml, userInfo }: ResultsDisplayProps) {
+export default function ResultsDisplay({ resultHtml, userInfo, onBack }: ResultsDisplayProps) {
   const { toast } = useToast();
 
   const handleCopy = async () => {
@@ -55,6 +56,15 @@ export default function ResultsDisplay({ resultHtml, userInfo }: ResultsDisplayP
           </div>
           
           <div className="flex flex-col sm:flex-row gap-2 no-print">
+            <Button 
+              variant="outline"
+              onClick={onBack}
+              className="hindi-text border-primary text-primary hover:bg-primary hover:text-primary-foreground"
+              data-testid="button-back"
+            >
+              ← वापस जाएं
+            </Button>
+            
             <Button 
               variant="secondary"
               onClick={handleCopy}

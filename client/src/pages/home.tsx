@@ -25,6 +25,16 @@ export default function Home() {
     }, 100);
   };
 
+  const handleBack = () => {
+    setResults(null);
+    setIsLoading(false);
+    
+    // Scroll back to top
+    setTimeout(() => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }, 100);
+  };
+
   return (
     <div className="min-h-screen">
       <Header />
@@ -65,6 +75,7 @@ export default function Home() {
               birthTime: results.formData.birthTime,
               birthPlace: results.formData.birthPlace || "",
             }}
+            onBack={handleBack}
           />
         )}
 
