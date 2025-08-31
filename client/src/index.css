@@ -245,6 +245,14 @@
     padding-bottom: 8px;
   }
   
+  .kundli-section h3 {
+    color: #d97706 !important;
+    font-size: 16px !important;
+    font-weight: 600 !important;
+    margin: 15px 0 8px 0 !important;
+    page-break-after: avoid;
+  }
+  
   .kundli-section p {
     font-size: 14px;
     line-height: 1.6;
