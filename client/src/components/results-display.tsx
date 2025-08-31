@@ -41,6 +41,12 @@ export default function ResultsDisplay({ resultHtml, userInfo, onBack }: Results
 
   return (
     <section className="space-y-6">
+      {/* Traditional Kundli Header */}
+      <div className="kundli-header no-print">
+        <h1 className="kundli-title hindi-text">जन्म कुंडली</h1>
+        <p className="kundli-subtitle hindi-text">व्यावहारिक मार्गदर्शन और जीवन सुझाव</p>
+      </div>
+
       {/* Results Header */}
       <div className="bg-card rounded-2xl p-6 md:p-8 card-shadow">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
@@ -85,12 +91,30 @@ export default function ResultsDisplay({ resultHtml, userInfo, onBack }: Results
         </div>
       </div>
 
-      {/* Result Content */}
-      <div 
-        className="space-y-6"
-        dangerouslySetInnerHTML={{ __html: resultHtml }}
-        data-testid="results-content"
-      />
+      {/* Traditional PDF Layout */}
+      <div className="kundli-content">
+        {/* Person Info for PDF */}
+        <div className="person-info">
+          <h3 className="hindi-text">{userInfo.name}</h3>
+          <p>जन्म तिथि: {userInfo.birthDate}</p>
+          <p>जन्म समय: {userInfo.birthTime}</p>
+          {userInfo.birthPlace && <p>जन्म स्थान: {userInfo.birthPlace}</p>}
+        </div>
+
+        {/* Result Content with Traditional Styling */}
+        <div 
+          className="kundli-sections space-y-6"
+          dangerouslySetInnerHTML={{ 
+            __html: resultHtml.replace(/<h2>/g, '<div class="kundli-section"><h2>').replace(/<\/h2>/g, '</h2>').replace(/<p>/g, '<p>').replace(/<\/p>/g, '</p></div>').replace(/<ul>/g, '<ul>').replace(/<\/ul>/g, '</ul>')
+          }}
+          data-testid="results-content"
+        />
+        
+        {/* Traditional Footer */}
+        <div className="kundli-footer">
+          <p>यह केवल मार्गदर्शन हेतु है। किसी भी महत्वपूर्ण निर्णय से पहले योग्य सलाहकार से सम्पर्क करें।</p>
+        </div>
+      </div>
     </section>
   );
 }

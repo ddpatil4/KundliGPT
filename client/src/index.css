@@ -122,18 +122,190 @@
   }
 }
 
+/* Print styles for traditional kundli PDF */
 @media print {
-  body { 
-    background: white !important; 
+  @page {
+    margin: 0.3in;
+    size: A4;
   }
-  .no-print { 
-    display: none !important; 
+  
+  .no-print {
+    display: none !important;
   }
-  .print-break { 
-    page-break-before: always; 
+  
+  body {
+    font-family: 'Noto Sans Devanagari', 'Mangal', Arial, sans-serif;
+    line-height: 1.6;
+    background: linear-gradient(135deg, #fef7ed 0%, #fed7aa 100%) !important;
   }
-  .card-shadow { 
-    box-shadow: none !important; 
-    border: 1px solid #ccc; 
+  
+  /* Traditional kundli header */
+  .kundli-header {
+    text-align: center;
+    padding: 20px;
+    border: 3px solid #d97706;
+    border-radius: 15px;
+    background: linear-gradient(135deg, #fef7ed 0%, #fed7aa 50%, #fef7ed 100%);
+    margin-bottom: 20px;
+    position: relative;
+    box-shadow: inset 0 0 20px rgba(217, 119, 6, 0.1);
+  }
+  
+  .kundli-header::before {
+    content: "🕉️ श्री गणेशाय नमः 🕉️";
+    display: block;
+    font-size: 14px;
+    color: #d97706;
+    font-weight: 600;
+    margin-bottom: 8px;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+  }
+  
+  .kundli-header::after {
+    content: "";
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    right: 10px;
+    bottom: 10px;
+    border: 1px solid rgba(217, 119, 6, 0.3);
+    border-radius: 10px;
+    pointer-events: none;
+  }
+  
+  .kundli-title {
+    font-size: 28px !important;
+    font-weight: 700 !important;
+    color: #1f2937 !important;
+    margin: 0 !important;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+    position: relative;
+    z-index: 1;
+  }
+  
+  .kundli-subtitle {
+    font-size: 16px;
+    color: #d97706;
+    margin-top: 5px;
+    font-weight: 500;
+  }
+  
+  /* Traditional decorative borders */
+  .kundli-content {
+    border: 2px solid #d97706;
+    border-radius: 10px;
+    padding: 15px;
+    background: #fefefe;
+    position: relative;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .kundli-content::before {
+    content: "🕉️";
+    position: absolute;
+    top: -8px;
+    left: 20px;
+    background: #fef7ed;
+    padding: 0 8px;
+    font-size: 16px;
+    color: #d97706;
+  }
+  
+  .kundli-content::after {
+    content: "🕉️";
+    position: absolute;
+    top: -8px;
+    right: 20px;
+    background: #fef7ed;
+    padding: 0 8px;
+    font-size: 16px;
+    color: #d97706;
+  }
+  
+  /* Traditional section styling */
+  .kundli-section {
+    margin-bottom: 20px;
+    padding: 12px;
+    border-left: 4px solid #d97706;
+    background: linear-gradient(90deg, #fef7ed 0%, transparent 100%);
+    border-radius: 0 8px 8px 0;
+  }
+  
+  .kundli-section h2 {
+    color: #1f2937 !important;
+    font-size: 18px !important;
+    font-weight: 600 !important;
+    margin: 0 0 8px 0 !important;
+    page-break-after: avoid;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .kundli-section p, .kundli-section li {
+    font-size: 14px;
+    line-height: 1.5;
+    color: #374151;
+    orphans: 2;
+    widows: 2;
+  }
+  
+  .kundli-section ul {
+    margin: 8px 0;
+    padding-left: 20px;
+  }
+  
+  .kundli-section li {
+    margin-bottom: 4px;
+  }
+  
+  /* Traditional footer */
+  .kundli-footer {
+    text-align: center;
+    margin-top: 30px;
+    padding: 15px;
+    border-top: 2px solid #d97706;
+    background: linear-gradient(135deg, #fef7ed 0%, #fed7aa 100%);
+    border-radius: 8px;
+    font-size: 12px;
+    color: #6b7280;
+  }
+  
+  .kundli-footer::before {
+    content: "🙏 सर्वे भवन्तु सुखिनः सर्वे सन्तु निरामयाः 🙏";
+    display: block;
+    font-size: 14px;
+    color: #d97706;
+    font-weight: 500;
+    margin-bottom: 8px;
+  }
+  
+  /* Person info styling */
+  .person-info {
+    background: #f9fafb;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #e5e7eb;
+    margin-bottom: 15px;
+    text-align: center;
+  }
+  
+  .person-info h3 {
+    color: #d97706;
+    font-size: 20px;
+    font-weight: 600;
+    margin: 0 0 8px 0;
+  }
+  
+  .person-info p {
+    margin: 2px 0;
+    font-size: 13px;
+    color: #6b7280;
+  }
+  
+  /* Card shadows removed for print */
+  .card-shadow {
+    box-shadow: none !important;
+    border: 1px solid #e5e7eb;
   }
 }
