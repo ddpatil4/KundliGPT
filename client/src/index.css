@@ -5,120 +5,120 @@
 @tailwind utilities;
 
 :root {
-  --background: hsl(33, 92%, 96%);
-  --foreground: hsl(20, 80%, 12%);
-  --card: hsl(0, 0%, 100%);
-  --card-foreground: hsl(20, 80%, 12%);
+  --background: linear-gradient(135deg, hsl(33, 92%, 96%) 0%, hsl(25, 80%, 94%) 100%);
+  --foreground: hsl(20, 90%, 8%);
+  --card: linear-gradient(145deg, hsl(0, 0%, 100%) 0%, hsl(33, 60%, 98%) 100%);
+  --card-foreground: hsl(20, 90%, 8%);
   --popover: hsl(0, 0%, 100%);
-  --popover-foreground: hsl(20, 80%, 12%);
-  --primary: hsl(25, 95%, 58%);
+  --popover-foreground: hsl(20, 90%, 8%);
+  --primary: hsl(25, 100%, 60%);
   --primary-foreground: hsl(0, 0%, 100%);
-  --secondary: hsl(33, 50%, 88%);
-  --secondary-foreground: hsl(20, 80%, 12%);
-  --muted: hsl(33, 50%, 92%);
-  --muted-foreground: hsl(20, 50%, 30%);
-  --accent: hsl(38, 92%, 50%);
+  --secondary: hsl(33, 60%, 90%);
+  --secondary-foreground: hsl(20, 90%, 8%);
+  --muted: hsl(33, 60%, 94%);
+  --muted-foreground: hsl(20, 60%, 25%);
+  --accent: hsl(38, 100%, 55%);
   --accent-foreground: hsl(0, 0%, 100%);
-  --destructive: hsl(0, 84%, 60%);
+  --destructive: hsl(0, 85%, 60%);
   --destructive-foreground: hsl(0, 0%, 98%);
-  --border: hsl(33, 50%, 85%);
-  --input: hsl(33, 50%, 85%);
-  --ring: hsl(25, 95%, 58%);
+  --border: hsl(33, 60%, 88%);
+  --input: hsl(33, 60%, 92%);
+  --ring: hsl(25, 100%, 60%);
   --radius: 1rem;
   --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
   --font-hindi: 'Noto Sans Devanagari', 'Mangal', system-ui, -apple-system, sans-serif;
 }
 
-/* Golden Theme - Warm gold with deep contrast */
+/* Golden Theme - Luxurious golden warmth */
 .golden {
-  --background: hsl(45, 70%, 97%);
-  --foreground: hsl(20, 80%, 12%);
-  --muted: hsl(45, 50%, 90%);
-  --muted-foreground: hsl(20, 50%, 30%);
-  --popover: hsl(45, 70%, 98%);
-  --popover-foreground: hsl(20, 80%, 12%);
-  --border: hsl(40, 60%, 80%);
-  --input: hsl(45, 50%, 90%);
-  --card: hsl(45, 80%, 98%);
-  --card-foreground: hsl(20, 80%, 12%);
-  --primary: hsl(38, 92%, 50%);
+  --background: linear-gradient(135deg, hsl(45, 80%, 97%) 0%, hsl(40, 70%, 94%) 100%);
+  --foreground: hsl(20, 90%, 8%);
+  --muted: hsl(45, 70%, 92%);
+  --muted-foreground: hsl(20, 60%, 25%);
+  --popover: hsl(45, 80%, 98%);
+  --popover-foreground: hsl(20, 90%, 8%);
+  --border: hsl(40, 80%, 82%);
+  --input: hsl(45, 70%, 92%);
+  --card: linear-gradient(145deg, hsl(45, 90%, 98%) 0%, hsl(40, 80%, 96%) 100%);
+  --card-foreground: hsl(20, 90%, 8%);
+  --primary: hsl(38, 100%, 55%);
   --primary-foreground: hsl(0, 0%, 100%);
-  --secondary: hsl(45, 60%, 85%);
-  --secondary-foreground: hsl(20, 80%, 12%);
-  --accent: hsl(35, 100%, 55%);
+  --secondary: hsl(45, 70%, 88%);
+  --secondary-foreground: hsl(20, 90%, 8%);
+  --accent: hsl(35, 100%, 60%);
   --accent-foreground: hsl(0, 0%, 100%);
-  --destructive: hsl(0, 70%, 50%);
+  --destructive: hsl(0, 80%, 55%);
   --destructive-foreground: hsl(0, 0%, 100%);
-  --ring: hsl(38, 92%, 50%);
+  --ring: hsl(38, 100%, 55%);
 }
 
-/* Cosmic Theme - Deep space with gold accents */
+/* Cosmic Theme - Beautiful starry night */
 .cosmic {
-  --background: hsl(240, 20%, 8%);
-  --foreground: hsl(45, 95%, 95%);
-  --muted: hsl(240, 15%, 15%);
-  --muted-foreground: hsl(45, 70%, 80%);
-  --popover: hsl(240, 20%, 12%);
-  --popover-foreground: hsl(45, 95%, 95%);
-  --border: hsl(280, 40%, 25%);
-  --input: hsl(240, 15%, 15%);
-  --card: hsl(240, 20%, 10%);
-  --card-foreground: hsl(45, 95%, 95%);
-  --primary: hsl(45, 90%, 65%);
-  --primary-foreground: hsl(240, 20%, 8%);
-  --secondary: hsl(280, 30%, 20%);
-  --secondary-foreground: hsl(45, 95%, 95%);
-  --accent: hsl(280, 60%, 55%);
-  --accent-foreground: hsl(0, 0%, 100%);
-  --destructive: hsl(0, 70%, 55%);
-  --destructive-foreground: hsl(0, 0%, 100%);
-  --ring: hsl(45, 90%, 65%);
-}
-
-/* Royal Theme - Deep purple with gold */
-.royal {
-  --background: hsl(270, 25%, 12%);
-  --foreground: hsl(50, 95%, 96%);
-  --muted: hsl(270, 20%, 18%);
-  --muted-foreground: hsl(50, 70%, 85%);
-  --popover: hsl(270, 25%, 16%);
-  --popover-foreground: hsl(50, 95%, 96%);
-  --border: hsl(45, 50%, 40%);
-  --input: hsl(270, 20%, 18%);
-  --card: hsl(270, 25%, 14%);
-  --card-foreground: hsl(50, 95%, 96%);
+  --background: linear-gradient(135deg, hsl(240, 30%, 12%) 0%, hsl(260, 40%, 8%) 100%);
+  --foreground: hsl(45, 100%, 98%);
+  --muted: hsl(240, 25%, 18%);
+  --muted-foreground: hsl(45, 80%, 85%);
+  --popover: hsl(240, 30%, 15%);
+  --popover-foreground: hsl(45, 100%, 98%);
+  --border: hsl(280, 60%, 35%);
+  --input: hsl(240, 25%, 18%);
+  --card: linear-gradient(145deg, hsl(240, 30%, 14%) 0%, hsl(260, 35%, 10%) 100%);
+  --card-foreground: hsl(45, 100%, 98%);
   --primary: hsl(45, 100%, 70%);
-  --primary-foreground: hsl(270, 25%, 12%);
-  --secondary: hsl(270, 40%, 25%);
-  --secondary-foreground: hsl(50, 95%, 96%);
-  --accent: hsl(270, 70%, 60%);
+  --primary-foreground: hsl(240, 30%, 8%);
+  --secondary: hsl(280, 40%, 25%);
+  --secondary-foreground: hsl(45, 100%, 98%);
+  --accent: hsl(280, 80%, 65%);
   --accent-foreground: hsl(0, 0%, 100%);
-  --destructive: hsl(0, 75%, 60%);
+  --destructive: hsl(0, 80%, 60%);
   --destructive-foreground: hsl(0, 0%, 100%);
   --ring: hsl(45, 100%, 70%);
 }
 
-/* Traditional Theme - Earthy saffron */
-.traditional {
-  --background: hsl(35, 40%, 95%);
-  --foreground: hsl(20, 80%, 10%);
-  --muted: hsl(35, 30%, 88%);
-  --muted-foreground: hsl(20, 50%, 30%);
-  --popover: hsl(35, 40%, 98%);
-  --popover-foreground: hsl(20, 80%, 10%);
-  --border: hsl(25, 50%, 75%);
-  --input: hsl(35, 30%, 88%);
-  --card: hsl(35, 50%, 98%);
-  --card-foreground: hsl(20, 80%, 10%);
-  --primary: hsl(15, 80%, 55%);
-  --primary-foreground: hsl(0, 0%, 100%);
-  --secondary: hsl(35, 40%, 85%);
-  --secondary-foreground: hsl(20, 80%, 10%);
-  --accent: hsl(25, 90%, 60%);
+/* Royal Theme - Majestic purple and gold */
+.royal {
+  --background: linear-gradient(135deg, hsl(270, 40%, 15%) 0%, hsl(290, 30%, 10%) 100%);
+  --foreground: hsl(50, 100%, 98%);
+  --muted: hsl(270, 30%, 22%);
+  --muted-foreground: hsl(50, 85%, 88%);
+  --popover: hsl(270, 35%, 18%);
+  --popover-foreground: hsl(50, 100%, 98%);
+  --border: hsl(280, 60%, 45%);
+  --input: hsl(270, 30%, 22%);
+  --card: linear-gradient(145deg, hsl(270, 35%, 16%) 0%, hsl(290, 30%, 12%) 100%);
+  --card-foreground: hsl(50, 100%, 98%);
+  --primary: hsl(45, 100%, 75%);
+  --primary-foreground: hsl(270, 40%, 10%);
+  --secondary: hsl(270, 50%, 30%);
+  --secondary-foreground: hsl(50, 100%, 98%);
+  --accent: hsl(280, 90%, 70%);
   --accent-foreground: hsl(0, 0%, 100%);
-  --destructive: hsl(0, 70%, 50%);
+  --destructive: hsl(0, 80%, 65%);
   --destructive-foreground: hsl(0, 0%, 100%);
-  --ring: hsl(15, 80%, 55%);
+  --ring: hsl(45, 100%, 75%);
+}
+
+/* Traditional Theme - Elegant saffron */
+.traditional {
+  --background: linear-gradient(135deg, hsl(35, 60%, 96%) 0%, hsl(25, 50%, 92%) 100%);
+  --foreground: hsl(20, 90%, 8%);
+  --muted: hsl(35, 50%, 90%);
+  --muted-foreground: hsl(20, 60%, 25%);
+  --popover: hsl(35, 60%, 98%);
+  --popover-foreground: hsl(20, 90%, 8%);
+  --border: hsl(25, 70%, 80%);
+  --input: hsl(35, 50%, 90%);
+  --card: linear-gradient(145deg, hsl(35, 70%, 98%) 0%, hsl(25, 60%, 95%) 100%);
+  --card-foreground: hsl(20, 90%, 8%);
+  --primary: hsl(15, 90%, 60%);
+  --primary-foreground: hsl(0, 0%, 100%);
+  --secondary: hsl(35, 60%, 88%);
+  --secondary-foreground: hsl(20, 90%, 8%);
+  --accent: hsl(25, 100%, 65%);
+  --accent-foreground: hsl(0, 0%, 100%);
+  --destructive: hsl(0, 80%, 55%);
+  --destructive-foreground: hsl(0, 0%, 100%);
+  --ring: hsl(15, 90%, 60%);
 }
 
 @layer base {
@@ -127,11 +127,24 @@
   }
 
   body {
-    background: hsl(var(--background));
+    background: var(--background);
     font-family: var(--font-sans);
     color: hsl(var(--foreground));
     @apply antialiased;
-    transition: background-color 0.3s ease, color 0.3s ease;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    min-height: 100vh;
+    position: relative;
+  }
+  
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--background);
+    z-index: -1;
   }
 }
 
@@ -141,56 +154,108 @@
   }
   
   .gradient-bg {
-    background: linear-gradient(135deg, hsl(25, 95%, 58%) 0%, hsl(38, 92%, 50%) 100%);
+    background: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--accent)) 100%);
+    box-shadow: 0 8px 32px hsl(var(--primary) / 0.3);
+    transition: all 0.3s ease;
+  }
+  
+  .gradient-bg:hover {
+    box-shadow: 0 12px 48px hsl(var(--primary) / 0.4);
+    transform: translateY(-2px);
   }
   
   .card-shadow {
-    box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+    background: var(--card);
+    border: 1px solid hsl(var(--border) / 0.2);
+    box-shadow: 
+      0 25px 50px -12px rgba(0, 0, 0, 0.25),
+      0 0 0 1px rgba(255, 255, 255, 0.05),
+      inset 0 1px 0 0 rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(16px);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .card-shadow:hover {
+    transform: translateY(-4px);
+    box-shadow: 
+      0 35px 70px -12px rgba(0, 0, 0, 0.35),
+      0 0 0 1px rgba(255, 255, 255, 0.1),
+      inset 0 1px 0 0 rgba(255, 255, 255, 0.2);
   }
   
   .form-input {
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
+    background: hsl(var(--input)) !important;
+    border: 1px solid hsl(var(--border)) !important;
+    backdrop-filter: blur(8px);
   }
   
   .form-input:focus {
     transform: translateY(-2px);
-    box-shadow: 0 10px 25px -5px rgb(0 0 0 / 0.15), 0 0 0 3px hsl(25, 95%, 58%, 0.2);
+    box-shadow: 
+      0 15px 35px -5px rgba(0, 0, 0, 0.2), 
+      0 0 0 3px hsl(var(--primary) / 0.3);
+    border-color: hsl(var(--primary)) !important;
+    background: hsl(var(--background)) !important;
   }
   
   .enhanced-card {
-    background: linear-gradient(145deg, hsl(0, 0%, 100%) 0%, hsl(33, 50%, 98%) 100%);
+    background: var(--card);
+    border: 1px solid hsl(var(--border) / 0.3);
     box-shadow: 
-      0 20px 25px -5px rgb(0 0 0 / 0.1), 
-      0 8px 10px -6px rgb(0 0 0 / 0.1),
-      inset 0 1px 0 0 rgb(255 255 255 / 0.1);
+      0 25px 40px -12px rgba(0, 0, 0, 0.25),
+      0 8px 16px -8px rgba(0, 0, 0, 0.1),
+      inset 0 1px 0 0 rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .enhanced-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 
+      0 35px 60px -12px rgba(0, 0, 0, 0.35),
+      0 15px 25px -8px rgba(0, 0, 0, 0.15),
+      inset 0 1px 0 0 rgba(255, 255, 255, 0.2);
   }
   
   .hero-gradient {
     background: linear-gradient(135deg, 
-      hsl(25, 95%, 58%) 0%, 
-      hsl(38, 92%, 50%) 50%, 
-      hsl(45, 90%, 45%) 100%);
+      hsl(var(--primary)) 0%, 
+      hsl(var(--accent)) 50%, 
+      hsl(var(--primary)) 100%);
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
+    background-size: 200% 200%;
+    animation: gradientShift 4s ease-in-out infinite;
+  }
+  
+  @keyframes gradientShift {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
   }
   
   .loading-skeleton {
-    background: linear-gradient(90deg, hsl(33, 50%, 88%) 25%, hsl(33, 50%, 92%) 50%, hsl(33, 50%, 88%) 75%);
+    background: linear-gradient(90deg, hsl(var(--muted)) 25%, hsl(var(--background)) 50%, hsl(var(--muted)) 75%);
     background-size: 200% 100%;
     animation: loading 1.5s infinite;
+    border-radius: 12px;
+    overflow: hidden;
   }
   
   .dropdown-item:hover {
-    background-color: hsl(33, 50%, 92%);
-    transform: translateX(4px);
+    background: hsl(var(--primary) / 0.1);
+    transform: translateX(6px) scale(1.02);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    border-radius: 8px;
   }
   
   .result-section {
-    animation: fadeInUp 0.6s ease-out forwards;
+    animation: fadeInUp 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(30px);
+    filter: blur(4px);
   }
   
   .result-section:nth-child(1) { animation-delay: 0.1s; }
@@ -212,6 +277,7 @@
   to {
     opacity: 1;
     transform: translateY(0);
+    filter: blur(0);
   }
 }
 
