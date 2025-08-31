@@ -1,12 +1,9 @@
 import { Link } from "wouter";
 import LanguageSwitcher from "@/components/language-switcher";
-import ThemeSwitcher from "@/components/theme-switcher";
 import { useLanguage } from "@/hooks/use-language";
-import { useTheme } from "@/hooks/use-theme";
 
 export default function Header() {
   const { language, setLanguage, t } = useLanguage();
-  const { theme, setTheme } = useTheme();
 
   return (
     <header className="bg-card shadow-sm border-b sticky top-0 z-50 no-print">
@@ -32,16 +29,10 @@ export default function Header() {
               </Link>
             </nav>
             
-            <div className="flex items-center space-x-2">
-              <LanguageSwitcher 
-                currentLanguage={language} 
-                onLanguageChange={setLanguage} 
-              />
-              <ThemeSwitcher 
-                currentTheme={theme} 
-                onThemeChange={setTheme} 
-              />
-            </div>
+            <LanguageSwitcher 
+              currentLanguage={language} 
+              onLanguageChange={setLanguage} 
+            />
           </div>
         </div>
       </div>

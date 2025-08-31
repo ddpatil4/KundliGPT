@@ -5,121 +5,30 @@
 @tailwind utilities;
 
 :root {
-  --background: hsl(45, 60%, 98%);
-  --foreground: hsl(20, 100%, 5%);
-  --card: hsl(0, 0%, 100%);
-  --card-foreground: hsl(20, 100%, 5%);
-  --popover: hsl(0, 0%, 100%);
-  --popover-foreground: hsl(20, 100%, 5%);
-  --primary: hsl(25, 100%, 50%);
-  --primary-foreground: hsl(0, 0%, 100%);
-  --secondary: hsl(33, 30%, 85%);
-  --secondary-foreground: hsl(20, 100%, 5%);
-  --muted: hsl(33, 30%, 90%);
-  --muted-foreground: hsl(20, 80%, 20%);
-  --accent: hsl(38, 100%, 45%);
-  --accent-foreground: hsl(0, 0%, 100%);
-  --destructive: hsl(0, 85%, 50%);
-  --destructive-foreground: hsl(0, 0%, 100%);
-  --border: hsl(33, 30%, 82%);
-  --input: hsl(33, 20%, 95%);
-  --ring: hsl(25, 100%, 50%);
-  --radius: 1rem;
+  --background: 0 0% 100%;
+  --foreground: 222.2 84% 4.9%;
+  --card: 0 0% 100%;
+  --card-foreground: 222.2 84% 4.9%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 222.2 84% 4.9%;
+  --primary: 221.2 83.2% 53.3%;
+  --primary-foreground: 210 40% 98%;
+  --secondary: 210 40% 96%;
+  --secondary-foreground: 222.2 84% 4.9%;
+  --muted: 210 40% 96%;
+  --muted-foreground: 215.4 16.3% 46.9%;
+  --accent: 210 40% 96%;
+  --accent-foreground: 222.2 84% 4.9%;
+  --destructive: 0 84.2% 60.2%;
+  --destructive-foreground: 210 40% 98%;
+  --border: 214.3 31.8% 91.4%;
+  --input: 214.3 31.8% 91.4%;
+  --ring: 221.2 83.2% 53.3%;
+  --radius: 0.5rem;
   --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
   --font-hindi: 'Noto Sans Devanagari', 'Mangal', system-ui, -apple-system, sans-serif;
 }
 
-/* Golden Theme - Luxurious golden warmth */
-.golden {
-  --background: hsl(45, 50%, 96%);
-  --foreground: hsl(30, 100%, 8%);
-  --muted: hsl(45, 30%, 88%);
-  --muted-foreground: hsl(30, 80%, 25%);
-  --popover: hsl(45, 60%, 98%);
-  --popover-foreground: hsl(30, 100%, 8%);
-  --border: hsl(40, 40%, 78%);
-  --input: hsl(45, 20%, 94%);
-  --card: hsl(45, 60%, 99%);
-  --card-foreground: hsl(30, 100%, 8%);
-  --primary: hsl(38, 100%, 45%);
-  --primary-foreground: hsl(0, 0%, 100%);
-  --secondary: hsl(45, 30%, 85%);
-  --secondary-foreground: hsl(30, 100%, 8%);
-  --accent: hsl(35, 100%, 50%);
-  --accent-foreground: hsl(0, 0%, 100%);
-  --destructive: hsl(0, 80%, 50%);
-  --destructive-foreground: hsl(0, 0%, 100%);
-  --ring: hsl(38, 100%, 45%);
-}
-
-/* Cosmic Theme - Beautiful starry night */
-.cosmic {
-  --background: hsl(230, 50%, 6%);
-  --foreground: hsl(0, 0%, 98%);
-  --muted: hsl(230, 30%, 15%);
-  --muted-foreground: hsl(0, 0%, 85%);
-  --popover: hsl(230, 40%, 10%);
-  --popover-foreground: hsl(0, 0%, 98%);
-  --border: hsl(280, 40%, 25%);
-  --input: hsl(230, 30%, 12%);
-  --card: hsl(230, 40%, 8%);
-  --card-foreground: hsl(0, 0%, 98%);
-  --primary: hsl(45, 100%, 65%);
-  --primary-foreground: hsl(230, 50%, 6%);
-  --secondary: hsl(280, 30%, 20%);
-  --secondary-foreground: hsl(0, 0%, 98%);
-  --accent: hsl(280, 80%, 60%);
-  --accent-foreground: hsl(0, 0%, 100%);
-  --destructive: hsl(0, 80%, 60%);
-  --destructive-foreground: hsl(0, 0%, 100%);
-  --ring: hsl(45, 100%, 65%);
-}
-
-/* Royal Theme - Majestic purple and gold */
-.royal {
-  --background: hsl(260, 60%, 8%);
-  --foreground: hsl(0, 0%, 98%);
-  --muted: hsl(260, 40%, 18%);
-  --muted-foreground: hsl(0, 0%, 85%);
-  --popover: hsl(260, 50%, 12%);
-  --popover-foreground: hsl(0, 0%, 98%);
-  --border: hsl(280, 50%, 30%);
-  --input: hsl(260, 40%, 15%);
-  --card: hsl(260, 50%, 10%);
-  --card-foreground: hsl(0, 0%, 98%);
-  --primary: hsl(45, 100%, 70%);
-  --primary-foreground: hsl(260, 60%, 8%);
-  --secondary: hsl(260, 40%, 25%);
-  --secondary-foreground: hsl(0, 0%, 98%);
-  --accent: hsl(280, 80%, 65%);
-  --accent-foreground: hsl(0, 0%, 100%);
-  --destructive: hsl(0, 80%, 60%);
-  --destructive-foreground: hsl(0, 0%, 100%);
-  --ring: hsl(45, 100%, 70%);
-}
-
-/* Traditional Theme - Elegant saffron */
-.traditional {
-  --background: hsl(35, 40%, 95%);
-  --foreground: hsl(25, 100%, 10%);
-  --muted: hsl(35, 20%, 85%);
-  --muted-foreground: hsl(25, 80%, 30%);
-  --popover: hsl(35, 50%, 97%);
-  --popover-foreground: hsl(25, 100%, 10%);
-  --border: hsl(25, 40%, 75%);
-  --input: hsl(35, 15%, 92%);
-  --card: hsl(35, 50%, 98%);
-  --card-foreground: hsl(25, 100%, 10%);
-  --primary: hsl(15, 90%, 50%);
-  --primary-foreground: hsl(0, 0%, 100%);
-  --secondary: hsl(35, 20%, 82%);
-  --secondary-foreground: hsl(25, 100%, 10%);
-  --accent: hsl(25, 100%, 55%);
-  --accent-foreground: hsl(0, 0%, 100%);
-  --destructive: hsl(0, 80%, 50%);
-  --destructive-foreground: hsl(0, 0%, 100%);
-  --ring: hsl(15, 90%, 50%);
-}
 
 @layer base {
   * {
