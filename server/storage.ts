@@ -1,4 +1,4 @@
-import { type User, type InsertUser, type ContactMessage, type InsertContactMessage } from "@shared/schema";
+import { type User, type InsertUser, type ContactMessage, type InsertContactMessage, type Category, type InsertCategory, type Post, type InsertPost } from "@shared/schema";
 import { randomUUID } from "crypto";
 
 export interface IStorage {
@@ -6,15 +6,32 @@ export interface IStorage {
   getUserByUsername(username: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
   createContactMessage(message: InsertContactMessage): Promise<ContactMessage>;
+  
+  // Categories
+  getCategories(): Promise<Category[]>;
+  createCategory(category: InsertCategory): Promise<Category>;
+  
+  // Posts
+  getPosts(): Promise<Post[]>;
+  getPost(id: number): Promise<Post | undefined>;
+  createPost(post: InsertPost & { authorId: string }): Promise<Post>;
+  updatePost(id: number, post: InsertPost): Promise<Post>;
+  deletePost(id: number): Promise<void>;
 }
 
 export class MemStorage implements IStorage {
   private users: Map<string, User>;
   private contactMessages: Map<string, ContactMessage>;
+  private categories: Map<number, Category>;
+  private posts: Map<number, Post>;
+  private nextCategoryId = 1;
+  private nextPostId = 1;
 
   constructor() {
     this.users = new Map();
     this.contactMessages = new Map();
+    this.categories = new Map();
+    this.posts = new Map();
   }
 
   async getUser(id: string): Promise<User | undefined> {
@@ -29,7 +46,12 @@ export class MemStorage implements IStorage {
 
   async createUser(insertUser: InsertUser): Promise<User> {
     const id = randomUUID();
-    const user: User = { ...insertUser, id };
+    const user: User = { 
+      ...insertUser, 
+      id,
+      isAdmin: insertUser.isAdmin || false,
+      createdAt: new Date()
+    };
     this.users.set(id, user);
     return user;
   }
@@ -43,6 +65,64 @@ export class MemStorage implements IStorage {
     };
     this.contactMessages.set(id, message);
     return message;
+  }
+
+  // Categories
+  async getCategories(): Promise<Category[]> {
+    return Array.from(this.categories.values());
+  }
+
+  async createCategory(insertCategory: InsertCategory): Promise<Category> {
+    const id = this.nextCategoryId++;
+    const category: Category = {
+      ...insertCategory,
+      id,
+      createdAt: new Date()
+    };
+    this.categories.set(id, category);
+    return category;
+  }
+
+  // Posts
+  async getPosts(): Promise<Post[]> {
+    return Array.from(this.posts.values());
+  }
+
+  async getPost(id: number): Promise<Post | undefined> {
+    return this.posts.get(id);
+  }
+
+  async createPost(postData: InsertPost & { authorId: string }): Promise<Post> {
+    const id = this.nextPostId++;
+    const post: Post = {
+      ...postData,
+      id,
+      categoryId: postData.categoryId || null,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    };
+    this.posts.set(id, post);
+    return post;
+  }
+
+  async updatePost(id: number, postData: InsertPost): Promise<Post> {
+    const existingPost = this.posts.get(id);
+    if (!existingPost) {
+      throw new Error("Post not found");
+    }
+    
+    const updatedPost: Post = {
+      ...existingPost,
+      ...postData,
+      categoryId: postData.categoryId || null,
+      updatedAt: new Date()
+    };
+    this.posts.set(id, updatedPost);
+    return updatedPost;
+  }
+
+  async deletePost(id: number): Promise<void> {
+    this.posts.delete(id);
   }
 }
 

@@ -1,8 +1,11 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { insertContactMessageSchema, kundliFormSchema } from "@shared/schema";
+import { insertContactMessageSchema, kundliFormSchema, insertUserSchema, insertCategorySchema, insertPostSchema } from "@shared/schema";
 import OpenAI from "openai";
+import bcrypt from "bcryptjs";
+import session from "express-session";
+import { z } from "zod";
 
 // In-memory rate limiter
 const rateLimiter = new Map<string, { count: number; resetTime: number }>();
@@ -26,7 +29,37 @@ function checkRateLimit(ip: string): boolean {
   return true;
 }
 
+declare module 'express-session' {
+  interface SessionData {
+    userId?: string;
+    isAdmin?: boolean;
+  }
+}
+
+// Middleware to check admin auth
+function requireAdmin(req: any, res: any, next: any) {
+  if (!req.session?.userId || !req.session?.isAdmin) {
+    return res.status(401).json({ 
+      ok: false, 
+      error: "Admin access required" 
+    });
+  }
+  next();
+}
+
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Setup session middleware
+  app.use(session({
+    secret: process.env.SESSION_SECRET || 'your-secret-key-change-in-production',
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      secure: false, // Set to true in production with HTTPS
+      httpOnly: true,
+      maxAge: 24 * 60 * 60 * 1000 // 24 hours
+    }
+  }));
+
   const openai = new OpenAI({ 
     apiKey: process.env.OPENAI_API_KEY || process.env.OPENAI_API_KEY_ENV_VAR || "default_key"
   });
@@ -165,6 +198,162 @@ IMPORTANT: Return ONLY HTML without any markdown formatting or code blocks. Use 
         ok: false, 
         error: "कुछ तकनीकी समस्या हुई है। कृपया पुनः प्रयास करें।" 
       });
+    }
+  });
+
+  // Admin Authentication Routes
+  app.post("/api/admin/login", async (req, res) => {
+    try {
+      const { username, password } = z.object({
+        username: z.string(),
+        password: z.string()
+      }).parse(req.body);
+
+      const user = await storage.getUserByUsername(username);
+      if (!user) {
+        return res.status(401).json({ 
+          ok: false, 
+          error: "Invalid credentials" 
+        });
+      }
+
+      const validPassword = await bcrypt.compare(password, user.password);
+      if (!validPassword) {
+        return res.status(401).json({ 
+          ok: false, 
+          error: "Invalid credentials" 
+        });
+      }
+
+      if (!user.isAdmin) {
+        return res.status(403).json({ 
+          ok: false, 
+          error: "Admin access required" 
+        });
+      }
+
+      // Set session
+      req.session.userId = user.id;
+      req.session.isAdmin = user.isAdmin;
+
+      res.json({ 
+        ok: true, 
+        user: { 
+          id: user.id, 
+          username: user.username, 
+          isAdmin: user.isAdmin 
+        } 
+      });
+    } catch (error: any) {
+      console.error("Login error:", error);
+      res.status(400).json({ ok: false, error: error.message });
+    }
+  });
+
+  app.post("/api/admin/logout", (req, res) => {
+    req.session.destroy((err) => {
+      if (err) {
+        return res.status(500).json({ ok: false, error: "Logout failed" });
+      }
+      res.json({ ok: true });
+    });
+  });
+
+  app.get("/api/admin/me", (req, res) => {
+    if (!req.session?.userId || !req.session?.isAdmin) {
+      return res.status(401).json({ 
+        ok: false, 
+        error: "Not authenticated" 
+      });
+    }
+
+    res.json({ 
+      ok: true, 
+      user: { 
+        id: req.session.userId, 
+        isAdmin: req.session.isAdmin 
+      } 
+    });
+  });
+
+  // Category Management Routes
+  app.get("/api/categories", async (req, res) => {
+    try {
+      const categories = await storage.getCategories();
+      res.json({ ok: true, categories });
+    } catch (error: any) {
+      console.error("Get categories error:", error);
+      res.status(500).json({ ok: false, error: error.message });
+    }
+  });
+
+  app.post("/api/categories", requireAdmin, async (req, res) => {
+    try {
+      const categoryData = insertCategorySchema.parse(req.body);
+      const category = await storage.createCategory(categoryData);
+      res.json({ ok: true, category });
+    } catch (error: any) {
+      console.error("Create category error:", error);
+      res.status(400).json({ ok: false, error: error.message });
+    }
+  });
+
+  // Posts Management Routes
+  app.get("/api/posts", async (req, res) => {
+    try {
+      const posts = await storage.getPosts();
+      res.json({ ok: true, posts });
+    } catch (error: any) {
+      console.error("Get posts error:", error);
+      res.status(500).json({ ok: false, error: error.message });
+    }
+  });
+
+  app.get("/api/posts/:id", async (req, res) => {
+    try {
+      const post = await storage.getPost(parseInt(req.params.id));
+      if (!post) {
+        return res.status(404).json({ ok: false, error: "Post not found" });
+      }
+      res.json({ ok: true, post });
+    } catch (error: any) {
+      console.error("Get post error:", error);
+      res.status(500).json({ ok: false, error: error.message });
+    }
+  });
+
+  app.post("/api/posts", requireAdmin, async (req, res) => {
+    try {
+      const postData = { 
+        ...insertPostSchema.parse(req.body),
+        authorId: req.session.userId 
+      };
+      const post = await storage.createPost(postData);
+      res.json({ ok: true, post });
+    } catch (error: any) {
+      console.error("Create post error:", error);
+      res.status(400).json({ ok: false, error: error.message });
+    }
+  });
+
+  app.put("/api/posts/:id", requireAdmin, async (req, res) => {
+    try {
+      const postData = insertPostSchema.parse(req.body);
+      const post = await storage.updatePost(parseInt(req.params.id), postData);
+      res.json({ ok: true, post });
+    } catch (error: any) {
+      console.error("Update post error:", error);
+      res.status(400).json({ ok: false, error: error.message });
+    }
+  });
+
+  app.delete("/api/posts/:id", requireAdmin, async (req, res) => {
+    try {
+      await storage.deletePost(parseInt(req.params.id));
+      res.json({ ok: true });
+    } catch (error: any) {
+      console.error("Delete post error:", error);
+      res.status(400).json({ ok: false, error: error.message });
     }
   });
 
