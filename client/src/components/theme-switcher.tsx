@@ -6,9 +6,9 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Sun, Moon, Monitor } from 'lucide-react';
+import { Sun, Moon, Star, Crown } from 'lucide-react';
 
-type Theme = 'light' | 'dark' | 'system';
+type Theme = 'golden' | 'cosmic' | 'royal' | 'traditional';
 
 interface ThemeSwitcherProps {
   currentTheme: Theme;
@@ -16,13 +16,14 @@ interface ThemeSwitcherProps {
 }
 
 const themes = {
-  light: { name: 'Light', icon: Sun },
-  dark: { name: 'Dark', icon: Moon },
-  system: { name: 'System', icon: Monitor }
+  golden: { name: 'Golden', icon: Sun },
+  cosmic: { name: 'Cosmic', icon: Star },
+  royal: { name: 'Royal', icon: Crown },
+  traditional: { name: 'Traditional', icon: Moon }
 };
 
 export default function ThemeSwitcher({ currentTheme, onThemeChange }: ThemeSwitcherProps) {
-  const CurrentIcon = themes[currentTheme].icon;
+  const CurrentIcon = themes[currentTheme]?.icon || Sun;
 
   return (
     <DropdownMenu>
@@ -34,7 +35,7 @@ export default function ThemeSwitcher({ currentTheme, onThemeChange }: ThemeSwit
           data-testid="theme-switcher"
         >
           <CurrentIcon className="h-4 w-4" />
-          {themes[currentTheme].name}
+          {themes[currentTheme]?.name || 'Golden'}
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">

@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
+import { useLanguage } from "@/hooks/use-language";
 import CitySearch from "./city-search";
 import { type City } from "@/lib/cities";
 
@@ -19,6 +20,7 @@ interface KundliFormProps {
 
 export default function KundliForm({ onResult }: KundliFormProps) {
   const { toast } = useToast();
+  const { language, t } = useLanguage();
   const [savedData, setSavedData] = useState<Partial<KundliFormData> | null>(null);
 
   const form = useForm<KundliFormData>({
@@ -31,6 +33,7 @@ export default function KundliForm({ onResult }: KundliFormProps) {
       birthPlace: "",
       latitude: undefined,
       longitude: undefined,
+      language: language,
     },
   });
 
@@ -115,6 +118,31 @@ export default function KundliForm({ onResult }: KundliFormProps) {
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
               {/* Name Field */}
+              <FormField
+                control={form.control}
+                name="language"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-sm font-medium hindi-text text-foreground">
+                      भाषा / Language *
+                    </FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger className="w-full px-4 py-3 border border-input rounded-lg form-input" data-testid="select-language">
+                          <SelectValue placeholder="भाषा चुनें / Select Language" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="hi">🇮🇳 हिंदी</SelectItem>
+                        <SelectItem value="en">🇺🇸 English</SelectItem>
+                        <SelectItem value="mr">🇮🇳 मराठी</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage className="hindi-text" />
+                  </FormItem>
+                )}
+              />
+
               <FormField
                 control={form.control}
                 name="name"

@@ -37,6 +37,7 @@ export const kundliFormSchema = z.object({
   birthPlace: z.string().optional(),
   latitude: z.number().optional(),
   longitude: z.number().optional(),
+  language: z.enum(['hi', 'en', 'mr']).default('hi'),
 });
 
 export type InsertUser = z.infer<typeof insertUserSchema>;
