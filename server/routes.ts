@@ -216,11 +216,11 @@ IMPORTANT: Return ONLY HTML without any markdown formatting or code blocks. Use 
       // Hash password
       const hashedPassword = await bcrypt.hash(userData.password, 12);
       
-      // Create new user (non-admin by default)
+      // Create new user (admin by default for this admin system)
       const newUser = await storage.createUser({
         ...userData,
         password: hashedPassword,
-        isAdmin: false
+        isAdmin: true
       });
 
       res.json({ 
