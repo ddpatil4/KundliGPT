@@ -139,11 +139,6 @@ export default function AdminLogin() {
               </Link>
             </div>
 
-            <div className="mt-4">
-              <p className="text-center text-sm text-gray-600">
-                Demo credentials: dipak / Dipak@123
-              </p>
-            </div>
           </div>
         </CardContent>
       </Card>
