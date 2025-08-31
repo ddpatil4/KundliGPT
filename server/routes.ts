@@ -222,17 +222,19 @@ IMPORTANT: Return ONLY HTML without any markdown formatting or code blocks. Use 
       }
 
       // Temporary: Allow simple password comparison for testing
+      console.log("Password check:", { inputPassword: password, storedPassword: user.password });
       const validPassword = password === user.password || await bcrypt.compare(password, user.password);
+      console.log("Password validation result:", validPassword);
+      
       if (!validPassword) {
-        console.log("Password comparison failed:", { 
-          inputPassword: password, 
-          storedPassword: user.password.substring(0, 20) + "..." 
-        });
+        console.log("❌ Password comparison failed!");
         return res.status(401).json({ 
           ok: false, 
           error: "Invalid credentials" 
         });
       }
+      
+      console.log("✅ Password validation successful!");
 
       if (!user.isAdmin) {
         return res.status(403).json({ 
