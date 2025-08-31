@@ -71,7 +71,7 @@ export default function CitySearch({ value, onChange, onCitySelect }: CitySearch
           >
             {searchResults.map((city, index) => (
               <div
-                key={`${city.name}-${city.state}`}
+                key={`${city.name}-${city.state}-${city.latitude}-${city.longitude}-${index}`}
                 className="dropdown-item px-4 py-3 cursor-pointer hover:bg-muted transition-colors border-b border-border last:border-b-0"
                 onClick={() => handleCityClick(city)}
                 data-testid={`city-option-${index}`}

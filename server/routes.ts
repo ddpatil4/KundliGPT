@@ -86,6 +86,16 @@ Format: साफ HTML (<h2>, <ul><li>, <p>) बिना inline styles के�
 
       const resultHtml = response.choices[0].message.content;
 
+      // Check if we got a valid response
+      if (!resultHtml || resultHtml.trim() === '') {
+        console.error("Empty response from OpenAI");
+        return res.status(500).json({ 
+          ok: false, 
+          error: "AI सेवा से खाली उत्तर मिला। कृपया पुनः प्रयास करें।" 
+        });
+      }
+
+      console.log("OpenAI response length:", resultHtml.length);
       res.json({ ok: true, resultHtml });
     } catch (error) {
       console.error("Error in /api/interpret:", error);
