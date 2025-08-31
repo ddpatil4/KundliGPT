@@ -107,7 +107,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       const userPrompt = `Birth Details: ${formData.name}, ${formData.birthDate}, ${formData.birthTime}, ${formData.birthPlace}
 
-${config.questionFormat}. Answer these 8 questions with practical life guidance:
+${config.questionFormat}. Answer ONLY these 8 questions with practical life guidance. Do NOT add any FAQ section or additional content:
 
 1. ${selectedQuestions[0]}
 2. ${selectedQuestions[1]}  
@@ -118,7 +118,7 @@ ${config.questionFormat}. Answer these 8 questions with practical life guidance:
 7. ${selectedQuestions[6]}
 8. ${selectedQuestions[7]}
 
-Provide brief, practical answers in HTML format using h2 tags for questions and p tags for answers.`;
+IMPORTANT: Return ONLY HTML without any markdown formatting or code blocks. Use <h2> tags for questions and <p> tags for answers. Do NOT include any FAQ section or additional questions.`;
 
       // Try gpt-4o first as fallback since gpt-5 might have issues
       console.log("Making OpenAI request with prompt length:", userPrompt.length);
@@ -133,7 +133,7 @@ Provide brief, practical answers in HTML format using h2 tags for questions and 
         temperature: 0.7,
       });
 
-      const resultHtml = response.choices[0].message.content;
+      let resultHtml = response.choices[0].message.content;
 
       // Check if we got a valid response
       if (!resultHtml || resultHtml.trim() === '') {
@@ -143,6 +143,19 @@ Provide brief, practical answers in HTML format using h2 tags for questions and 
           error: "AI सेवा से खाली उत्तर मिला। कृपया पुनः प्रयास करें।" 
         });
       }
+
+      // Clean up HTML code blocks and markdown formatting
+      resultHtml = resultHtml.replace(/```html\n?/g, '');
+      resultHtml = resultHtml.replace(/```\n?$/g, '');
+      resultHtml = resultHtml.replace(/^```.*\n?/gm, '');
+      resultHtml = resultHtml.replace(/```$/gm, '');
+
+      // Remove any FAQ sections that might still appear
+      resultHtml = resultHtml.replace(/.*अक्सर पूछे जाने वाले प्रश्न.*/gi, '');
+      resultHtml = resultHtml.replace(/.*frequently asked questions.*/gi, '');
+      resultHtml = resultHtml.replace(/.*faq.*/gi, '');
+      
+      resultHtml = resultHtml.trim();
 
       console.log("OpenAI response length:", resultHtml.length);
       res.json({ ok: true, resultHtml });

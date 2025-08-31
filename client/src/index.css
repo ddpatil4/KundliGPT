@@ -294,23 +294,24 @@
   /* Enhanced section styling with Devanagari fonts */
   .kundli-sections h2 {
     font-family: var(--font-hindi) !important;
-    margin-bottom: 25px;
+    margin-bottom: 20px;
     padding: 20px 25px;
-    border-left: 5px solid #d97706;
-    background: linear-gradient(90deg, #fef7ed 0%, transparent 100%);
+    border-left: 5px solid hsl(var(--primary));
+    background: linear-gradient(90deg, hsl(var(--primary) / 0.1) 0%, transparent 100%);
     border-radius: 0 12px 12px 0;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
-    color: #1f2937 !important;
-    font-size: 24px !important;
-    font-weight: 800 !important;
+    color: hsl(var(--foreground)) !important;
+    font-size: 26px !important;
+    font-weight: 900 !important;
     margin: 25px 0 15px 0 !important;
     page-break-after: avoid;
     display: flex;
     align-items: center;
     gap: 10px;
-    border-bottom: 2px solid rgba(217, 119, 6, 0.3);
+    border-bottom: 2px solid hsl(var(--primary) / 0.3);
     padding-bottom: 12px;
     text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+    letter-spacing: 0.5px;
   }
   
   .kundli-sections h3 {
