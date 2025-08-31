@@ -78,13 +78,8 @@ export default function AdminPostEditor() {
   // Create post mutation
   const createPostMutation = useMutation({
     mutationFn: async (data: PostFormData) => {
-      return await apiRequest("/api/posts", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      });
+      const response = await apiRequest("POST", "/api/posts", data);
+      return await response.json();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/posts"] });

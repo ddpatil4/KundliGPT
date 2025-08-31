@@ -32,13 +32,8 @@ export function useLogin() {
 
   return useMutation({
     mutationFn: async (loginData: LoginData) => {
-      return await apiRequest("/api/admin/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(loginData),
-      });
+      const response = await apiRequest("POST", "/api/admin/login", loginData);
+      return await response.json();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/admin/me"] });
@@ -51,9 +46,8 @@ export function useLogout() {
 
   return useMutation({
     mutationFn: async () => {
-      return await apiRequest("/api/admin/logout", {
-        method: "POST",
-      });
+      const response = await apiRequest("POST", "/api/admin/logout");
+      return await response.json();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/admin/me"] });

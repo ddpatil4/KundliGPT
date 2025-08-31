@@ -32,6 +32,38 @@ export class MemStorage implements IStorage {
     this.contactMessages = new Map();
     this.categories = new Map();
     this.posts = new Map();
+    this.initializeData();
+  }
+
+  private initializeData() {
+    // Create admin user
+    const adminId = "admin-user-id";
+    const adminUser: User = {
+      id: adminId,
+      username: "admin",
+      password: "$2b$12$TbuicwIfSiZdyB2jGJXWC.Z8dUbdDocdsnwXlEBAALdkKiP5/n6Be", // "password"
+      isAdmin: true,
+      createdAt: new Date()
+    };
+    this.users.set(adminId, adminUser);
+
+    // Create sample categories
+    const categories = [
+      { name: "Kundali Tips", slug: "kundali-tips", description: "Helpful tips and guidance for Kundali analysis" },
+      { name: "Astrology Basics", slug: "astrology-basics", description: "Basic concepts and fundamentals of astrology" },
+      { name: "Remedies", slug: "remedies", description: "Astrological remedies and solutions" },
+      { name: "Festival Guide", slug: "festival-guide", description: "Hindu festivals and their significance" }
+    ];
+
+    categories.forEach(cat => {
+      const id = this.nextCategoryId++;
+      const category: Category = {
+        ...cat,
+        id,
+        createdAt: new Date()
+      };
+      this.categories.set(id, category);
+    });
   }
 
   async getUser(id: string): Promise<User | undefined> {
