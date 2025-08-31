@@ -202,6 +202,41 @@ IMPORTANT: Return ONLY HTML without any markdown formatting or code blocks. Use 
   });
 
   // Admin Authentication Routes
+  // Register Route
+  app.post("/api/register", async (req, res) => {
+    try {
+      const userData = insertUserSchema.parse(req.body);
+      
+      // Check if username already exists
+      const existingUser = await storage.getUserByUsername(userData.username);
+      if (existingUser) {
+        return res.status(400).json({ ok: false, error: "Username already exists" });
+      }
+
+      // Hash password
+      const hashedPassword = await bcrypt.hash(userData.password, 12);
+      
+      // Create new user (non-admin by default)
+      const newUser = await storage.createUser({
+        ...userData,
+        password: hashedPassword,
+        isAdmin: false
+      });
+
+      res.json({ 
+        ok: true, 
+        user: { 
+          id: newUser.id, 
+          username: newUser.username,
+          isAdmin: newUser.isAdmin 
+        } 
+      });
+    } catch (error: any) {
+      console.error("Register error:", error);
+      res.status(400).json({ ok: false, error: error.message || "Registration failed" });
+    }
+  });
+
   app.post("/api/admin/login", async (req, res) => {
     try {
       const { username, password } = z.object({
