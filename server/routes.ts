@@ -82,7 +82,7 @@ Format: साफ HTML (<h2>, <ul><li>, <p>) बिना inline styles के�
           { role: "user", content: userPrompt }
         ],
         temperature: 0.7,
-        max_tokens: 2000,
+        max_completion_tokens: 2000,
       });
 
       const resultHtml = response.choices[0].message.content;
