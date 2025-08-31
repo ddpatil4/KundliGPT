@@ -209,7 +209,11 @@ IMPORTANT: Return ONLY HTML without any markdown formatting or code blocks. Use 
         password: z.string()
       }).parse(req.body);
 
+      console.log("Login attempt:", { username, password });
+      
       const user = await storage.getUserByUsername(username);
+      console.log("User found:", user ? "YES" : "NO", user ? { id: user.id, username: user.username, isAdmin: user.isAdmin } : "null");
+      
       if (!user) {
         return res.status(401).json({ 
           ok: false, 
