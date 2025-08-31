@@ -11,6 +11,7 @@ import About from "@/pages/about";
 import Contact from "@/pages/contact";
 import AdminLogin from "@/pages/admin-login";
 import AdminDashboard from "@/pages/admin-dashboard";
+import AdminPosts from "@/pages/admin-posts";
 import AdminPostEditor from "@/pages/admin-post-editor";
 import Blog from "@/pages/blog";
 import BlogPost from "@/pages/blog-post";
@@ -28,6 +29,7 @@ function Router() {
       <Route path="/blog/:slug" component={BlogPost} />
       <Route path="/admin/login" component={AdminLogin} />
       <Route path="/admin" component={AdminDashboard} />
+      <Route path="/admin/posts" component={AdminPosts} />
       <Route path="/admin/posts/new" component={AdminPostEditor} />
       <Route component={NotFound} />
     </Switch>
