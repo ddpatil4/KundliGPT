@@ -344,6 +344,43 @@ IMPORTANT: Return ONLY HTML without any markdown formatting or code blocks. Use 
     }
   });
 
+  // Update category
+  app.put("/api/categories/:id", requireAdmin, async (req, res) => {
+    try {
+      const { id } = req.params;
+      const categoryId = parseInt(id);
+      
+      if (isNaN(categoryId)) {
+        return res.status(400).json({ ok: false, error: "Invalid category ID" });
+      }
+
+      const categoryData = insertCategorySchema.parse(req.body);
+      
+      // Check if category exists
+      const existingCategory = await storage.getCategoryById(categoryId);
+      if (!existingCategory) {
+        return res.status(404).json({ ok: false, error: "Category not found" });
+      }
+
+      // Check if slug is unique (excluding current category)
+      if (categoryData.slug !== existingCategory.slug) {
+        const existingSlug = await storage.getCategoryBySlug(categoryData.slug);
+        if (existingSlug) {
+          return res.status(400).json({ ok: false, error: "Category slug already exists" });
+        }
+      }
+
+      const updatedCategory = await storage.updateCategory(categoryId, categoryData);
+      res.json({ ok: true, category: updatedCategory });
+    } catch (error) {
+      console.error("Update category error:", error);
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ ok: false, error: "Invalid category data", details: error.errors });
+      }
+      res.status(500).json({ ok: false, error: "Failed to update category" });
+    }
+  });
+
   // Category deletion endpoint
   app.delete("/api/categories/:id", requireAdmin, async (req, res) => {
     try {

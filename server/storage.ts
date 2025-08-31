@@ -206,6 +206,25 @@ export class DatabaseStorage implements IStorage {
     return category;
   }
 
+  async getCategoryById(id: number): Promise<Category | undefined> {
+    const [category] = await db.select().from(categories).where(eq(categories.id, id));
+    return category || undefined;
+  }
+
+  async getCategoryBySlug(slug: string): Promise<Category | undefined> {
+    const [category] = await db.select().from(categories).where(eq(categories.slug, slug));
+    return category || undefined;
+  }
+
+  async updateCategory(id: number, categoryData: InsertCategory): Promise<Category> {
+    const [category] = await db
+      .update(categories)
+      .set({ ...categoryData, updatedAt: new Date() })
+      .where(eq(categories.id, id))
+      .returning();
+    return category;
+  }
+
   async deleteCategory(id: number): Promise<boolean> {
     const result = await db.delete(categories).where(eq(categories.id, id));
     return result.rowCount > 0;

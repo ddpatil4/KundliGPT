@@ -100,6 +100,30 @@ export default function AdminCategories() {
     },
   });
 
+  const updateCategoryMutation = useMutation({
+    mutationFn: async ({ id, data }: { id: number; data: CategoryFormData }) => {
+      const response = await apiRequest("PUT", `/api/categories/${id}`, data);
+      return await response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/categories"] });
+      toast({
+        title: "Success",
+        description: "Category updated successfully!",
+      });
+      setIsDialogOpen(false);
+      setEditingCategory(null);
+      form.reset();
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to update category",
+        variant: "destructive",
+      });
+    },
+  });
+
   const deleteCategoryMutation = useMutation({
     mutationFn: async (categoryId: number) => {
       const response = await apiRequest("DELETE", `/api/categories/${categoryId}`);
@@ -132,7 +156,11 @@ export default function AdminCategories() {
   };
 
   const handleCreateCategory = (data: CategoryFormData) => {
-    createCategoryMutation.mutate(data);
+    if (editingCategory) {
+      updateCategoryMutation.mutate({ id: editingCategory.id, data });
+    } else {
+      createCategoryMutation.mutate(data);
+    }
   };
 
   const handleDeleteCategory = (categoryId: number, name: string) => {
@@ -144,6 +172,16 @@ export default function AdminCategories() {
   const openCreateDialog = () => {
     setEditingCategory(null);
     form.reset();
+    setIsDialogOpen(true);
+  };
+
+  const openEditDialog = (category: Category) => {
+    setEditingCategory(category);
+    form.reset({
+      name: category.name,
+      slug: category.slug,
+      description: category.description || "",
+    });
     setIsDialogOpen(true);
   };
 
@@ -190,9 +228,9 @@ export default function AdminCategories() {
               </DialogTrigger>
               <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
-                  <DialogTitle>Add New Category</DialogTitle>
+                  <DialogTitle>{editingCategory ? "Edit Category" : "Add New Category"}</DialogTitle>
                   <DialogDescription>
-                    Create a new category for organizing your blog posts.
+                    {editingCategory ? "Update the category details below." : "Create a new category for organizing your blog posts."}
                   </DialogDescription>
                 </DialogHeader>
                 <Form {...form}>
@@ -263,10 +301,10 @@ export default function AdminCategories() {
                       <Button 
                         type="submit" 
                         className="bg-orange-500 hover:bg-orange-600"
-                        disabled={createCategoryMutation.isPending}
+                        disabled={createCategoryMutation.isPending || updateCategoryMutation.isPending}
                         data-testid="button-save-category"
                       >
-                        {createCategoryMutation.isPending ? "Creating..." : "Create Category"}
+                        {(createCategoryMutation.isPending || updateCategoryMutation.isPending) ? (editingCategory ? "Updating..." : "Creating...") : (editingCategory ? "Update Category" : "Create Category")}
                       </Button>
                     </div>
                   </form>
@@ -347,7 +385,7 @@ export default function AdminCategories() {
                             variant="outline" 
                             size="sm" 
                             className="p-2"
-                            onClick={() => {/* TODO: Add edit functionality */}}
+                            onClick={() => openEditDialog(category)}
                             data-testid={`button-edit-category-${category.id}`}
                           >
                             <Edit className="h-4 w-4" />
