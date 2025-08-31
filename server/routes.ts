@@ -135,7 +135,7 @@ IMPORTANT: सभी 8 प्रश्नों के detailed answers दे�
           { role: "system", content: systemPrompt },
           { role: "user", content: userPrompt }
         ],
-        max_tokens: 3000,
+        max_tokens: 4000,
         temperature: 0.7,
       });
 

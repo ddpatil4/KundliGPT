@@ -223,13 +223,68 @@
   }
   
   /* Traditional section styling with better spacing */
-  .kundli-section {
+  .kundli-sections h2 {
     margin-bottom: 25px;
     padding: 15px 18px;
     border-left: 4px solid #d97706;
     background: linear-gradient(90deg, #fef7ed 0%, transparent 100%);
     border-radius: 0 8px 8px 0;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    color: #1f2937 !important;
+    font-size: 19px !important;
+    font-weight: 600 !important;
+    margin: 20px 0 12px 0 !important;
+    page-break-after: avoid;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-bottom: 1px solid rgba(217, 119, 6, 0.2);
+    padding-bottom: 8px;
+  }
+  
+  .kundli-sections h3 {
+    color: #d97706 !important;
+    font-size: 16px !important;
+    font-weight: 600 !important;
+    margin: 15px 0 8px 0 !important;
+    page-break-after: avoid;
+    padding: 8px 12px;
+    background: rgba(217, 119, 6, 0.1);
+    border-radius: 4px;
+  }
+  
+  .kundli-sections p {
+    font-size: 14px;
+    line-height: 1.6;
+    color: #374151;
+    margin-bottom: 10px;
+    orphans: 2;
+    widows: 2;
+    text-align: justify;
+    padding: 0 12px;
+  }
+  
+  .kundli-sections strong {
+    color: #d97706;
+    font-weight: 600;
+  }
+  
+  .kundli-sections ul {
+    margin: 12px 0;
+    padding-left: 35px;
+  }
+  
+  .kundli-sections li {
+    margin-bottom: 6px;
+    font-size: 14px;
+    line-height: 1.5;
+    color: #374151;
+  }
+  
+  .kundli-sections br {
+    display: block;
+    margin: 15px 0;
+    line-height: 1;
   }
   
   .kundli-section h2 {

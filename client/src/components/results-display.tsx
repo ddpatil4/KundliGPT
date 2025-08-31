@@ -124,7 +124,7 @@ export default function ResultsDisplay({ resultHtml, userInfo, onBack }: Results
         <div 
           className="kundli-sections space-y-6"
           dangerouslySetInnerHTML={{ 
-            __html: resultHtml.replace(/<h2>/g, '<div class="kundli-section"><h2>').replace(/<\/h2>/g, '</h2>').replace(/<p>/g, '<p>').replace(/<\/p>/g, '</p></div>').replace(/<ul>/g, '<ul>').replace(/<\/ul>/g, '</ul>')
+            __html: resultHtml
           }}
           data-testid="results-content"
         />
