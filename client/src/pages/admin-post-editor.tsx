@@ -66,6 +66,25 @@ export default function AdminPostEditor() {
     }
   }, [isAuthenticated, isAdmin, isLoading, setLocation]);
 
+  // Fetch categories
+  const { data: categoriesData } = useQuery({
+    queryKey: ["/api/categories"],
+  });
+
+  // Fetch existing post data for edit mode
+  const { data: postData, isLoading: postLoading } = useQuery({
+    queryKey: ["/api/posts", postId],
+    enabled: isEditMode && !!postId,
+  });
+
+  // Auto-generate slug from title (only for new posts)
+  const watchedTitle = form.watch("title");
+  useEffect(() => {
+    if (!isEditMode && watchedTitle && !form.getValues("slug")) {
+      form.setValue("slug", generateSlug(watchedTitle));
+    }
+  }, [watchedTitle, form, isEditMode]);
+
   // Load existing post data in edit mode
   useEffect(() => {
     if (isEditMode && postData?.post) {
@@ -81,25 +100,6 @@ export default function AdminPostEditor() {
       });
     }
   }, [postData, isEditMode, form]);
-
-  // Auto-generate slug from title (only for new posts)
-  const watchedTitle = form.watch("title");
-  useEffect(() => {
-    if (!isEditMode && watchedTitle && !form.getValues("slug")) {
-      form.setValue("slug", generateSlug(watchedTitle));
-    }
-  }, [watchedTitle, form, isEditMode]);
-
-  // Fetch categories
-  const { data: categoriesData } = useQuery({
-    queryKey: ["/api/categories"],
-  });
-
-  // Fetch existing post data for edit mode
-  const { data: postData, isLoading: postLoading } = useQuery({
-    queryKey: ["/api/posts", postId],
-    enabled: isEditMode && !!postId,
-  });
 
   // Save post mutation (create or update)
   const savePostMutation = useMutation({
