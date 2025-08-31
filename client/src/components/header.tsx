@@ -21,6 +21,9 @@ export default function Header() {
               <Link href="/" className="text-muted-foreground hover:text-foreground transition-colors hindi-text" data-testid="link-main">
                 मुख्य
               </Link>
+              <Link href="/blog" className="text-muted-foreground hover:text-foreground transition-colors hindi-text" data-testid="link-blog">
+                ब्लॉग
+              </Link>
               <Link href="/about" className="text-muted-foreground hover:text-foreground transition-colors hindi-text" data-testid="link-about">
                 हमारे बारे में
               </Link>
