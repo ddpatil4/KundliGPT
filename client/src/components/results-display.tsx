@@ -15,6 +15,25 @@ interface ResultsDisplayProps {
 export default function ResultsDisplay({ resultHtml, userInfo, onBack }: ResultsDisplayProps) {
   const { toast } = useToast();
 
+  // Format date from YYYY-MM-DD to DD Month YYYY
+  const formatDate = (dateString: string): string => {
+    const date = new Date(dateString);
+    const months = [
+      'जनवरी', 'फरवरी', 'मार्च', 'अप्रैल', 'मई', 'जून',
+      'जुलाई', 'अगस्त', 'सितंबर', 'अक्टूबर', 'नवंबर', 'दिसंबर'
+    ];
+    return `${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()}`;
+  };
+
+  // Format time from 24-hour to 12-hour AM/PM
+  const formatTime = (timeString: string): string => {
+    const [hours, minutes] = timeString.split(':');
+    const hour24 = parseInt(hours, 10);
+    const hour12 = hour24 === 0 ? 12 : hour24 > 12 ? hour24 - 12 : hour24;
+    const ampm = hour24 >= 12 ? 'PM' : 'AM';
+    return `${hour12}:${minutes} ${ampm}`;
+  };
+
   const handleCopy = async () => {
     try {
       const tempDiv = document.createElement('div');
@@ -56,7 +75,7 @@ export default function ResultsDisplay({ resultHtml, userInfo, onBack }: Results
             </h2>
             <p className="text-muted-foreground hindi-text">व्यावहारिक मार्गदर्शन और जीवन सुझाव</p>
             <div className="text-sm text-muted-foreground space-y-1">
-              <p>जन्म: {userInfo.birthDate} | समय: {userInfo.birthTime}</p>
+              <p>जन्म: {formatDate(userInfo.birthDate)} | समय: {formatTime(userInfo.birthTime)}</p>
               {userInfo.birthPlace && <p>स्थान: {userInfo.birthPlace}</p>}
             </div>
           </div>
@@ -96,8 +115,8 @@ export default function ResultsDisplay({ resultHtml, userInfo, onBack }: Results
         {/* Person Info for PDF */}
         <div className="person-info">
           <h3 className="hindi-text">{userInfo.name}</h3>
-          <p>जन्म तिथि: {userInfo.birthDate}</p>
-          <p>जन्म समय: {userInfo.birthTime}</p>
+          <p>जन्म तिथि: {formatDate(userInfo.birthDate)}</p>
+          <p>जन्म समय: {formatTime(userInfo.birthTime)}</p>
           {userInfo.birthPlace && <p>जन्म स्थान: {userInfo.birthPlace}</p>}
         </div>
 
