@@ -1,4 +1,7 @@
 import { type User, type InsertUser, type ContactMessage, type InsertContactMessage, type Category, type InsertCategory, type Post, type InsertPost } from "@shared/schema";
+import { users, categories, posts, contactMessages } from "@shared/schema";
+import { db } from "./db";
+import { eq } from "drizzle-orm";
 import { randomUUID } from "crypto";
 
 export interface IStorage {
@@ -158,4 +161,76 @@ export class MemStorage implements IStorage {
   }
 }
 
-export const storage = new MemStorage();
+export class DatabaseStorage implements IStorage {
+  async getUser(id: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.id, id));
+    return user || undefined;
+  }
+
+  async getUserByUsername(username: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.username, username));
+    return user || undefined;
+  }
+
+  async createUser(insertUser: InsertUser): Promise<User> {
+    const [user] = await db
+      .insert(users)
+      .values(insertUser)
+      .returning();
+    return user;
+  }
+
+  async createContactMessage(insertMessage: InsertContactMessage): Promise<ContactMessage> {
+    const [message] = await db
+      .insert(contactMessages)
+      .values(insertMessage)
+      .returning();
+    return message;
+  }
+
+  // Categories
+  async getCategories(): Promise<Category[]> {
+    return await db.select().from(categories);
+  }
+
+  async createCategory(insertCategory: InsertCategory): Promise<Category> {
+    const [category] = await db
+      .insert(categories)
+      .values(insertCategory)
+      .returning();
+    return category;
+  }
+
+  // Posts
+  async getPosts(): Promise<Post[]> {
+    return await db.select().from(posts);
+  }
+
+  async getPost(id: number): Promise<Post | undefined> {
+    const [post] = await db.select().from(posts).where(eq(posts.id, id));
+    return post || undefined;
+  }
+
+  async createPost(postData: InsertPost & { authorId: string }): Promise<Post> {
+    const [post] = await db
+      .insert(posts)
+      .values(postData)
+      .returning();
+    return post;
+  }
+
+  async updatePost(id: number, postData: InsertPost): Promise<Post> {
+    const [post] = await db
+      .update(posts)
+      .set(postData)
+      .where(eq(posts.id, id))
+      .returning();
+    return post;
+  }
+
+  async deletePost(id: number): Promise<void> {
+    await db.delete(posts).where(eq(posts.id, id));
+  }
+}
+
+export const storage = new DatabaseStorage();
